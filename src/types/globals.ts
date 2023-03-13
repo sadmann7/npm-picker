@@ -29,10 +29,12 @@ export type ChatGPTMessage = {
 export interface ExtendedNextRequest extends NextRequest {
   json: () => Promise<{
     requirement: string;
+    framework: FRAMEWORK;
   }>;
 }
 
 export enum FRAMEWORK {
+  NOT_SPECIFIED = "Not specified",
   REACT = "React.js",
   SVELTE = "Svelte",
   VUE = "Vue.js",

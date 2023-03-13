@@ -3,70 +3,79 @@ import { Check, ChevronUp } from "lucide-react";
 import { Fragment, useState } from "react";
 import type { Control, FieldValues, Path, PathValue } from "react-hook-form";
 import { Controller } from "react-hook-form";
+import { twMerge } from "tailwind-merge";
 
-type DropdownSelectProps<TInputs extends FieldValues> = {
-  control: Control<TInputs, any>;
-  name: Path<TInputs>;
-  options: {
-    value: PathValue<TInputs, Path<TInputs>>;
-    label: string;
-  }[];
+type DropdownSelectProps<TFieldValues extends FieldValues, TContext = any> = {
+  control: Control<TFieldValues, TContext>;
+  name: Path<TFieldValues>;
+  options: PathValue<TFieldValues, Path<TFieldValues>>[];
 };
 
-const DropdownSelect = <TInputs extends FieldValues>({
+const DropdownSelect = <TFieldValues extends FieldValues>({
   control,
   name,
   options,
-}: DropdownSelectProps<TInputs>) => {
+}: DropdownSelectProps<TFieldValues>) => {
   const [selected, setSelected] = useState(options[0]);
-  if (!selected) return null;
 
   return (
     <Controller
       control={control}
       name={name}
-      defaultValue={selected.value}
+      // defaultValue={selected}
       render={({ field: { onChange } }) => (
         <Listbox
           value={selected}
           onChange={(val) => {
-            onChange(val.value);
+            onChange(val);
             setSelected(val);
           }}
         >
           <div className="relative">
-            <Listbox.Button className="relative w-full cursor-pointer rounded-md border border-gray-400 py-2.5 pl-4 pr-10 text-left text-base text-gray-300 shadow-md transition-colors focus:outline-none focus-visible:border-violet-500 focus-visible:ring-1 focus-visible:ring-violet-500">
-              <span className="block truncate">{selected?.label}</span>
+            <Listbox.Button
+              className={twMerge(
+                "relative w-full cursor-pointer rounded-md border border-gray-400 bg-gray-50 py-2.5 pl-4 pr-10 text-left text-base text-gray-900 shadow-md transition-colors",
+                "focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900"
+              )}
+            >
+              <span className="block truncate">{selected}</span>
               <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
                 <ChevronUp
-                  className="h-5 w-5 text-gray-400 transition-transform ui-open:rotate-180"
+                  className="h-5 w-5 text-gray-600 transition-transform ui-open:rotate-180"
                   aria-hidden="true"
                 />
               </span>
             </Listbox.Button>
             <Transition
               as={Fragment}
-              leave="transition ease-in duration-100"
-              leaveFrom="opacity-100"
-              leaveTo="opacity-0"
+              enter="transition ease-out duration-100"
+              enterFrom="transform opacity-0 scale-95"
+              enterTo="transform opacity-100 scale-100"
+              leave="transition ease-in duration-75"
+              leaveFrom="transform opacity-100 scale-100"
+              leaveTo="transform opacity-0 scale-95"
             >
-              <Listbox.Options className="absolute z-10 mt-2 max-h-60 w-full overflow-auto rounded-md bg-gray-700 py-1 text-sm shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+              <Listbox.Options className="absolute z-10 mt-2 max-h-72 w-full overflow-auto rounded-md bg-gray-50 py-1 text-sm shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                 {options.map((option) => (
                   <Listbox.Option
-                    key={option.label}
-                    className="relative cursor-pointer select-none py-2 pl-10 pr-4 text-white transition hover:bg-gray-500 ui-selected:bg-violet-500 hover:ui-selected:bg-violet-500/80"
+                    key={option}
+                    className="relative cursor-pointer select-none px-4 py-2 text-gray-900 transition hover:bg-gray-200 ui-selected:bg-gray-300 hover:ui-selected:bg-gray-200"
                     value={option}
                   >
                     {({ selected }) => (
                       <>
-                        <span className="block truncate font-normal ui-selected:font-medium">
-                          {selected ? (
-                            <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-white">
-                              <Check className="h-5 w-5" aria-hidden="true" />
-                            </span>
-                          ) : null}
-                          {option.label}
+                        <span
+                          className={`block truncate ${
+                            selected ? "font-medium" : "font-normal"
+                          }`}
+                        >
+                          {option}
                         </span>
+                        {selected ? (
+                          <span className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-600">
+                            <Check className="h-5 w-5" aria-hidden="true" />
+                          </span>
+                        ) : null}
                       </>
                     )}
                   </Listbox.Option>

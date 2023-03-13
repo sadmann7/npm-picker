@@ -1,9 +1,9 @@
 import {
   Check,
   ChevronDown,
-  Code,
   Copy,
   LucideProps,
+  Package,
   RefreshCcw,
   type Icon as LucideIcon,
 } from "lucide-react";
@@ -15,7 +15,7 @@ export const Icons = {
   chevronDown: ChevronDown,
   copy: Copy,
   refresh: RefreshCcw,
-  logo: (props: LucideProps) => <Code {...props} />,
+  logo: (props: LucideProps) => <Package {...props} />,
   gitHub: (props: LucideProps) => (
     <svg viewBox="0 0 438.549 438.549" {...props}>
       <path

@@ -26,13 +26,12 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <button
         className={twMerge(
-          "flex w-full items-center justify-center rounded-md border border-transparent px-4 py-2 text-base font-medium shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 active:scale-[0.99] disabled:pointer-events-none disabled:opacity-70 dark:focus:ring-slate-400 dark:focus:ring-offset-slate-900",
-          variant === "primary" &&
-            "bg-violet-600 text-white hover:bg-violet-700",
+          "flex w-full items-center justify-center rounded-md border border-transparent px-4 py-2 text-base font-medium shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 active:scale-[0.99] disabled:pointer-events-none disabled:opacity-70 dark:focus:ring-gray-400 dark:focus:ring-offset-gray-900",
+          variant === "primary" && "bg-blue-600 text-white hover:bg-blue-700",
           variant === "secondary" &&
-            "bg-slate-50 text-slate-900 hover:bg-slate-200",
+            "bg-gray-50 text-gray-900 hover:bg-gray-200",
           variant === "ghost" &&
-            "bg-transparent hover:bg-slate-100 dark:text-slate-100 dark:hover:bg-slate-800 dark:hover:text-slate-100",
+            "bg-transparent hover:bg-gray-100 dark:text-gray-100 dark:hover:bg-gray-800 dark:hover:text-gray-100",
           className
         )}
         ref={ref}
@@ -43,9 +42,9 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             <Loader2 className="mr-2 aspect-square w-4 animate-spin" />
           ) : (
             <div className="flex space-x-2">
-              <div className="h-2 w-2 animate-bounce rounded-full bg-violet-600"></div>
-              <div className="h-2 w-2 animate-bounce rounded-full bg-violet-600"></div>
-              <div className="h-2 w-2 animate-bounce rounded-full bg-violet-600"></div>
+              <div className="h-2 w-2 animate-bounce rounded-full bg-blue-600"></div>
+              <div className="h-2 w-2 animate-bounce rounded-full bg-blue-600"></div>
+              <div className="h-2 w-2 animate-bounce rounded-full bg-blue-600"></div>
             </div>
           )
         ) : null}

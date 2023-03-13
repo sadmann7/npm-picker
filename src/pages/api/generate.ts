@@ -9,23 +9,15 @@ export const config = {
   runtime: "edge",
 };
 
-const handler = async (req: ExtendedNextRequest) => {
-  const { description, language, robotsIndex, robotsFollow, tagVariant } =
-    await req.json();
+export default async function handler(req: ExtendedNextRequest) {
+  const { framework, requirement } = await req.json();
 
   console.log({
-    description,
-    language,
-    robotsIndex,
-    robotsFollow,
-    tagVariant,
+    requirement,
+    framework,
   });
 
-  const prompt = `My company is a ${description} and I want to rank on Google. I want to use the following language: ${language}. I want to use the following robots.txt settings: index: ${robotsIndex}, follow: ${robotsFollow}. I want to use the ${
-    tagVariant === "selfClosing"
-      ? "self-closing like in JSX or TSX"
-      : "non self-closing"
-  } meta tags.`;
+  const prompt = `Recommend me 2 npm packages for ${framework} that can ${requirement}`;
 
   if (!prompt) {
     return new Response("No prompt in the request", { status: 400 });
@@ -36,7 +28,7 @@ const handler = async (req: ExtendedNextRequest) => {
     messages: [
       {
         role: "system",
-        content: `I want you to act as a smart meta tags generator in html format. I will tell you what my company or idea does and you will reply me SEO optimized meta tags for my website according to my prompt. You will include these meta tags: Basic meta tags (including the title tag), Open Graph meta tags, Twitter Card meta tags, Google site verification. You will use the self-closing meta tags like in JSX or TSX when asked. You will only reply the meta tags within the html head tag, and nothing else not even html and head tags. Do not write explanations.`,
+        content: `I am a bot that can help you find the best framework for your project. I will ask you about your requirement and framework, and then I will generate 2 npm packages that you can use in your project. Let's get started!`,
       },
       { role: "user", content: prompt },
     ],
@@ -51,6 +43,4 @@ const handler = async (req: ExtendedNextRequest) => {
 
   const stream = await openaiStream(payload);
   return new Response(stream);
-};
-
-export default handler;
+}

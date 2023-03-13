@@ -1,15 +1,18 @@
 const Footer = () => {
   return (
-    <footer aria-label="footer">
-      <div className="grid place-items-center bg-slate-800/80 py-5">
-        <h1 className="text-sm text-slate-400 sm:text-base">
+    <footer
+      aria-label="footer"
+      className="bg-gradient-to-b from-gray-700/80 to-gray-800"
+    >
+      <div className="container grid w-full max-w-6xl place-items-center py-5 text-center">
+        <h1 className="text-sm text-gray-400 sm:text-base">
           Powered by{" "}
           <a
             aria-label="navigate to openai"
             href="https://openai.com/"
             target="_blank"
             rel="noreferrer"
-            className="font-semibold text-slate-200 transition-colors hover:text-white active:text-slate-100"
+            className="font-semibold text-gray-300 transition-colors hover:text-gray-100 active:text-gray-300"
           >
             OpenAI
           </a>
@@ -19,7 +22,7 @@ const Footer = () => {
             href="https://vercel.com"
             target="_blank"
             rel="noreferrer"
-            className="font-semibold text-slate-200 transition-colors hover:text-white active:text-slate-100"
+            className="font-semibold text-gray-300 transition-colors hover:text-gray-100 active:text-gray-300"
           >
             Vercel
           </a>
