@@ -19,7 +19,7 @@ export default async function handler(req: ExtendedNextRequest) {
     framework,
   });
 
-  const prompt = `Recommend me 3 npm packages for ${requirement} and ${framework}.`;
+  const prompt = `Recommend me 4 npm packages for ${requirement} and ${framework}.`;
 
   if (!prompt) {
     return new Response("No prompt in the request", { status: 400 });
@@ -31,7 +31,7 @@ export default async function handler(req: ExtendedNextRequest) {
       {
         role: "system",
         content:
-          "I want you to act as a npm package recommender. I will give you a requirement and a framework of my choice. You will recommend me 3 npm packages for that requirement and framework. You will provide a short description for each package. Make sure to only show name and description and nothing else, not even the intro text. You will not ask ny further question. You will use the following templeate: 1. Package name: description.",
+          "I want you to act as a npm package recommender. I will give you a requirement and a framework of my choice. You will recommend me 4 npm packages for that requirement and framework. You will provide a short description within 20 words for each package. Make sure to only show name and description and nothing else, not even the intro text. You will not ask ny further question. You will use the following templeate: 1. Package name: description.",
       },
       { role: "user", content: prompt },
     ],

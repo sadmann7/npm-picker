@@ -7,7 +7,7 @@ const Header = () => {
       aria-label="header"
       className="fixed top-0 left-0 z-20 flex w-full items-center gap-4"
     >
-      <nav className="container mx-auto flex max-w-7xl items-center justify-between px-4 py-4">
+      <nav className="container mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
         <Link
           aria-label="navigate to home page"
           href="/"
