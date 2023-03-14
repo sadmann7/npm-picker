@@ -25,41 +25,41 @@ export default function Home() {
   });
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    console.log(data);
-    // setPackages("");
-    // setIsLoading(true);
-    // const response = await fetch("/api/generate", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify({
-    //     ...data,
-    //   }),
-    // });
+    // console.log(data);
+    setPackages("");
+    setIsLoading(true);
+    const response = await fetch("/api/generate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        ...data,
+      }),
+    });
 
-    // if (!response.ok) {
-    //   throw new Error(response.statusText);
-    // }
+    if (!response.ok) {
+      throw new Error(response.statusText);
+    }
 
-    // // This data is a ReadableStream
-    // const responseData = response.body;
-    // if (!responseData) {
-    //   return;
-    // }
+    // This data is a ReadableStream
+    const responseData = response.body;
+    if (!responseData) {
+      return;
+    }
 
-    // const reader = responseData.getReader();
-    // const decoder = new TextDecoder();
-    // let done = false;
+    const reader = responseData.getReader();
+    const decoder = new TextDecoder();
+    let done = false;
 
-    // while (!done) {
-    //   const { value, done: doneReading } = await reader.read();
-    //   done = doneReading;
-    //   const chunkValue = decoder.decode(value);
-    //   setPackages((prev) => prev + chunkValue);
-    // }
+    while (!done) {
+      const { value, done: doneReading } = await reader.read();
+      done = doneReading;
+      const chunkValue = decoder.decode(value);
+      setPackages((prev) => prev + chunkValue);
+    }
 
-    // setIsLoading(false);
+    setIsLoading(false);
   };
 
   console.log(packages);
@@ -67,12 +67,13 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>NPM Package Picker</title>
+        <title>npm Package Picker</title>
       </Head>
       <main className="w-full pt-32 pb-32">
         <div className="container flex flex-col items-center justify-center gap-10">
           <h1 className="max-w-2xl text-center text-3xl font-bold leading-tight text-gray-50 sm:text-5xl sm:leading-tight">
-            Find the best NPM packages for your project
+            Find the best npm <span className="text-blue-500">packages</span>{" "}
+            for your project
           </h1>
           <form
             aria-label="form for finding NPM packages"
@@ -94,7 +95,7 @@ export default function Home() {
               <textarea
                 id="requirement"
                 rows={3}
-                className="w-full rounded-md border-gray-400 bg-transparent px-4 pt-2.5 text-base text-gray-50 transition-colors placeholder:text-gray-400 focus:border-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-offset-2 focus:ring-offset-gray-900"
+                className="w-full rounded-md border-gray-400 bg-transparent px-4 pt-2.5 text-base text-gray-50 transition-colors placeholder:text-gray-400 focus:border-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-offset-2 focus:ring-offset-gray-800"
                 placeholder="e.g. Table"
                 {...register("requirement")}
               />

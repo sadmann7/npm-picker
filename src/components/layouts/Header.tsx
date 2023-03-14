@@ -14,7 +14,7 @@ const Header = () => {
           className="flex items-center gap-2 text-white transition-colors hover:text-gray-100"
         >
           <Icons.logo aria-hidden="true" className="h-6 w-6" />
-          <span className="text-xl font-medium">NPM Picker</span>
+          <span className="text-xl font-medium">npm Picker</span>
         </Link>
         <a
           aria-label="navigate to github repo"

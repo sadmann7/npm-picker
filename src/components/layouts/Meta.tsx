@@ -10,12 +10,12 @@ type MetaProps = {
 };
 
 const Meta = ({
-  siteName = "Meta Tags Generator",
-  title = "Meta Tags Generator",
-  description = "Generate meta tags for your website with AI",
-  image = "https://metatagz.vercel.app/api/og?title=Meta%20Tags%20Generator&description=Generate%20meta%20tags%20for%20your%20website%20with%20AI",
-  keywords = "meta tags generator, SEO, Google, website visibility",
-  url = "https://metatagz.vercel.app/",
+  siteName = "npm Package Picker",
+  title = "npm Package Picker",
+  description = "Find the best npm packages for your project",
+  image = "https://npmpicker.vercel.app/api/og?title=npm%20Package%20Picker&description=Find%20the%20best%20npm%20packages%20for%20your%20project",
+  keywords = "npm, package, picker, react, vue, angular, svelte, next, gatsby, vite, snowpack, webpack, parcel, rollup, esbuild, vite, sapper, sveltekit, nest, express, fastify, koa, hapi, adonis, loopback, nestjs, nest.js, next.js, gatsby.js, vite.js, snowpack.js, webpack.js, parcel.js, rollup.js, esbuild.js, vite.js, sapper.js, sveltekit.js, nest.js, express.js, fastify.js, koa.js, hapi.js, adonis.js, loopback.js, nestjs.js, nest.js, next.js, gatsby.js, vite.js, snowpack.js, webpack.js, parcel.js, rollup.js, esbuild.js, vite.js, sapper.js, sveltekit.js, nest.js, express.js, fastify.js, koa.js, hapi.js, adonis.js, loopback.js, nestjs.js, nest.js, next.js, gatsby.js, vite.js, snowpack.js, webpack.js, parcel.js, rollup.js, esbuild.js, vite.js, sapper.js, sveltekit.js, nest.js, express.js, fastify.js, koa.js, hapi.js, adonis.js, loopback.js, nestjs.js, nest.js, next.js, gatsby.js, vite.js, snowpack.js, webpack.js, parcel.js, rollup.js, esbuild.js, vite.js, sapper.js, sveltekit.js, nest.js, express.js, fastify.js, koa.js, hapi.js, adonis.js, loopback.js, nestjs.js, nest.js, next.js, gatsby.js, vite.js, snowpack.js, webpack.js, parcel.js, rollup.js, esbuild.js, vite.js, sapper.js, sveltekit.js, nest.js, express.js, fastify.js, koa.js, hapi.js, adonis.js, loopback.js, nestjs.js, nest.js, next.js, gatsby.js, vite.js, snowpack.js, webpack.js, parcel.js, rollup.js, esbuild.js, vite.js, sapper.js, sveltekit.js, nest.js, express.js, fastify.js, koa.js, hapi.js, adonis.js, loopback.js",
+  url = "https://npmpicker.vercel.app/",
 }: MetaProps) => {
   return (
     <Head>

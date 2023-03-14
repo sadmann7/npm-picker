@@ -3,6 +3,7 @@ import ToastWrapper from "@/components/ui/ToastWrapper";
 import "@/styles/globals.css";
 import type { NextPage } from "next";
 import type { AppProps } from "next/app";
+import Head from "next/head";
 import type { ReactElement, ReactNode } from "react";
 
 export type NextPageWithLayout<P = Record<string, unknown>, IP = P> = NextPage<
@@ -22,6 +23,9 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
 
   return (
     <>
+      <Head>
+        <title>npm Package Picker</title>
+      </Head>
       {getLayout(<Component {...pageProps} />)}
       <ToastWrapper />
     </>
