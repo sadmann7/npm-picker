@@ -2,7 +2,9 @@ import type { ExtendedNextRequest, OpenAIStreamPayload } from "@/types/globals";
 import { openaiStream } from "@/utils/openai";
 
 if (!process.env.OPENAI_API_KEY) {
-  throw new Error("OPENAI_API_KEY is not defined. Please add it to .env file.");
+  throw new Error(
+    "OPENAI_API_KEY is not defined in .env file. Please add it there (see README.md for more details)."
+  );
 }
 
 export const config = {
@@ -17,7 +19,7 @@ export default async function handler(req: ExtendedNextRequest) {
     framework,
   });
 
-  const prompt = `Recommend me 2 npm packages for ${framework} for ${requirement}`;
+  const prompt = `Recommend me 3 npm packages for ${requirement} and ${framework}.`;
 
   if (!prompt) {
     return new Response("No prompt in the request", { status: 400 });
@@ -28,7 +30,8 @@ export default async function handler(req: ExtendedNextRequest) {
     messages: [
       {
         role: "system",
-        content: `I am a bot that can help you find the best framework for your project. I will ask you about your requirement and framework, and then I will generate 2 npm packages that you can use in your project. Let's get started!`,
+        content:
+          "I want you to act as a npm package recommender. I will give you a requirement and a framework of my choice. You will recommend me 3 npm packages for that requirement and framework. You will provide a short description for each package. Make sure to only show name and description and nothing else, not even the intro text. You will not ask ny further question. You will use the following templeate: 1. Package name: description.",
       },
       { role: "user", content: prompt },
     ],

@@ -1,4 +1,5 @@
-import { NextRequest } from "next/server";
+import type { NextApiRequest } from "next";
+import type { NextRequest } from "next/server";
 
 export type OpenAIStreamPayload = {
   model: ChatGPTModel;
@@ -33,6 +34,12 @@ export interface ExtendedNextRequest extends NextRequest {
   }>;
 }
 
+export interface npmResponse extends NextApiRequest {
+  body: {
+    name: string;
+  };
+}
+
 export enum FRAMEWORK {
   NOT_SPECIFIED = "Not specified",
   REACT = "React.js",
@@ -41,3 +48,11 @@ export enum FRAMEWORK {
   ANGULAR = "Angular",
   NODE = "Node.js",
 }
+
+export type Package = {
+  name: string;
+  repository?: string;
+  downloads?: string;
+  unpackedSize?: string;
+  lastPublish?: string;
+};
