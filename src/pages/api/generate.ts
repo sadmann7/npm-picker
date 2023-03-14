@@ -17,7 +17,7 @@ export default async function handler(req: ExtendedNextRequest) {
     framework,
   });
 
-  const prompt = `Recommend me 2 npm packages for ${framework} that can ${requirement}`;
+  const prompt = `Recommend me 2 npm packages for ${framework} for ${requirement}`;
 
   if (!prompt) {
     return new Response("No prompt in the request", { status: 400 });

@@ -18,7 +18,7 @@ const Header = () => {
         </Link>
         <a
           aria-label="navigate to github repo"
-          href="https://github.com/sadmann7/meta-tagz"
+          href="https://github.com/sadmann7/npm-picker"
           target="_blank"
           rel="noopener noreferrer"
         >
