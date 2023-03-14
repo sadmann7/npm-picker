@@ -16,21 +16,19 @@ const Header = () => {
           <Icons.logo aria-hidden="true" className="h-6 w-6" />
           <span className="text-xl font-medium">NPM Picker</span>
         </Link>
-        <div className="flex items-center gap-2">
-          <a
-            aria-label="navigate to github repo"
-            href="https://github.com/sadmann7/meta-tagz"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <div className="flex items-center gap-2 rounded-full bg-blue-600 px-4 py-2 text-base transition hover:bg-blue-700 active:scale-95">
-              <Icons.gitHub aria-hidden="true" className="h-5 w-5" />
-              <span className="text-xs text-gray-100 sm:text-sm">
-                Star on Github
-              </span>
-            </div>
-          </a>
-        </div>
+        <a
+          aria-label="navigate to github repo"
+          href="https://github.com/sadmann7/meta-tagz"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <div className="flex items-center gap-2 rounded-full bg-blue-600 px-4 py-2 text-base transition hover:bg-blue-700 active:scale-95">
+            <Icons.gitHub aria-hidden="true" className="h-5 w-5" />
+            <span className="text-xs text-gray-100 sm:text-sm">
+              Star on Github
+            </span>
+          </div>
+        </a>
       </nav>
     </header>
   );

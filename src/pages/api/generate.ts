@@ -2,7 +2,7 @@ import type { ExtendedNextRequest, OpenAIStreamPayload } from "@/types/globals";
 import { openaiStream } from "@/utils/openai";
 
 if (!process.env.OPENAI_API_KEY) {
-  throw new Error("Missing env var from OpenAI");
+  throw new Error("OPENAI_API_KEY is not defined. Please add it to .env file.");
 }
 
 export const config = {
