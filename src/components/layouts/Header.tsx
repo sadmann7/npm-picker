@@ -43,9 +43,9 @@ const Header = () => {
           target="_blank"
           rel="noopener noreferrer"
         >
-          <div className="flex items-center gap-2 rounded-full bg-blue-600 px-4 py-2 text-base transition hover:bg-blue-700 active:scale-95">
+          <div className="flex items-center gap-2 rounded-full bg-blue-600 px-2 py-2 text-base transition hover:bg-blue-700 active:scale-95 xxs:px-4">
             <Icons.gitHub aria-hidden="true" className="h-5 w-5" />
-            <span className="text-xs text-gray-100 sm:text-sm">
+            <span className="sr-only text-xs text-gray-100 xxs:not-sr-only sm:text-sm">
               Star on Github
             </span>
           </div>

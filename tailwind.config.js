@@ -6,7 +6,12 @@ module.exports = {
       center: true,
       padding: "1rem",
     },
-    extend: {},
+    extend: {
+      screens: {
+        xxs: "320px",
+        xs: "480px",
+      },
+    },
   },
   plugins: [require("@tailwindcss/forms"), require("@headlessui/tailwindcss")],
 };
