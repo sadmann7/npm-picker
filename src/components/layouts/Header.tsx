@@ -1,14 +1,31 @@
 import { Icons } from "@/components/Icons";
 import { useAppContext } from "@/contexts/AppProvider";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { twMerge } from "tailwind-merge";
 
 const Header = () => {
+  const [isScrolled, setIsScrolled] = useState<boolean>(false);
   const { setGeneratedPkgs } = useAppContext();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const isScrolled = window.scrollY > 0;
+      setIsScrolled(isScrolled);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
     <header
       aria-label="header"
-      className="fixed top-0 left-0 z-20 flex w-full items-center gap-4"
+      className={twMerge(
+        "fixed top-0 left-0 z-20 flex w-full items-center gap-4",
+        isScrolled
+          ? "bg-gradient-to-t from-gray-700/80 to-gray-800/80 backdrop-blur-sm backdrop-filter"
+          : "bg-transparent"
+      )}
     >
       <nav className="container mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
         <Link

@@ -1,7 +1,7 @@
 import {
   FRAMEWORK,
   type ExtendedNextRequest,
-  type OpenAIStreamPayload,
+  type OpenAIStreamPayload
 } from "@/types/globals";
 import { openaiStream } from "@/utils/openai";
 

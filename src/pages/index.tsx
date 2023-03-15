@@ -31,7 +31,6 @@ export default function Home() {
       resolver: zodResolver(schema),
     }
   );
-
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     // console.log(data);
     setGeneratedPkgs("");
@@ -92,6 +91,7 @@ export default function Home() {
                   onClick={() => {
                     setGeneratedPkgs("");
                   }}
+                  disabled={isLoading || !isDone}
                 >
                   Search again
                 </Button>
@@ -135,6 +135,12 @@ export default function Home() {
                     className="w-full rounded-md border-gray-400 bg-transparent px-4 pt-2.5 text-base text-gray-50 transition-colors placeholder:text-gray-400 focus:border-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-offset-2 focus:ring-offset-gray-800"
                     placeholder="e.g. Table"
                     {...register("requirement")}
+                    onKeyDown={(e) => {
+                      if (!formState.isValid || isLoading) return;
+                      if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+                        handleSubmit(onSubmit)();
+                      }
+                    }}
                   />
                   {formState.errors.requirement ? (
                     <p className="-mt-1.5 text-sm font-medium text-red-500">
