@@ -27,6 +27,7 @@
     "lucide-react": "^0.125.0",
     "next": "13.2.4",
     "react": "18.2.0",
+    "react-content-loader": "^6.2.1",
     "react-dom": "18.2.0",
     "react-hook-form": "^7.43.5",
     "react-hot-toast": "^2.4.0",

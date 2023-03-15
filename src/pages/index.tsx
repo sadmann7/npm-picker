@@ -1,5 +1,6 @@
 import { Icons } from "@/components/Icons";
 import Button from "@/components/ui/Button";
+import ContentLoading from "@/components/ui/ContentLoading";
 import DropdownSelect from "@/components/ui/DropdownSelect";
 import { FRAMEWORK, type Package } from "@/types/globals";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -69,8 +70,6 @@ export default function Home() {
 
     setIsLoading(false);
   };
-
-  console.log(isDone);
 
   return (
     <>
@@ -217,15 +216,19 @@ const PackageCard = ({ data, isDone }: { data: string; isDone: boolean }) => {
           {name}
         </h2>
         <div className="flex items-center gap-2.5">
-          <a
-            href={`https://${pkgData?.repository}`}
-            target="_blank"
-            rel="noreferrer noopener"
-            className="flex items-center gap-1.5 text-sm font-medium text-gray-400 hover:text-gray-50"
-          >
-            <span className="sr-only">View on GitHub</span>
-            <Icons.gitHub className="h-4 w-4 text-gray-300 hover:text-gray-50" />
-          </a>
+          {isDone && pkgData.repository ? (
+            <a
+              href={`https://${pkgData.repository}`}
+              target="_blank"
+              rel="noreferrer noopener"
+              className="flex items-center gap-1.5 text-sm font-medium text-gray-400 hover:text-gray-50"
+            >
+              <span className="sr-only">View on GitHub</span>
+              <Icons.gitHub className="h-4 w-4 text-gray-300 transition-colors hover:text-gray-50 active:scale-95" />
+            </a>
+          ) : (
+            <ContentLoading srText="loading github icon" variant="circle" />
+          )}
           <a
             href={`https://www.npmjs.com/package/${name}`}
             target="_blank"
@@ -233,33 +236,47 @@ const PackageCard = ({ data, isDone }: { data: string; isDone: boolean }) => {
             className="flex items-center gap-1.5 "
           >
             <span className="sr-only">View on npm</span>
-            <Icons.npm className="h-8 w-8 text-gray-300 hover:text-gray-50" />
+            <Icons.npm className="h-8 w-8 text-gray-300 transition-colors hover:text-gray-50 active:scale-95" />
           </a>
         </div>
       </div>
       <p className="text-sm text-gray-300 sm:text-base">{description}</p>
       <div className="mt-2 flex items-center gap-2.5">
-        <div className="flex items-center gap-1.5">
-          <Download className="h-4 w-4 text-gray-300" />
-          <span className="text-sm font-medium text-gray-400">
-            {pkgData?.downloads?.toLocaleString()}
-          </span>
-          <span className="sr-only">downloads</span>
-        </div>
-        <div className="flex items-center gap-1.5">
-          <Calendar className="h-4 w-4 text-gray-300" />
-          <span className="text-sm font-medium text-gray-400">
-            {dayjs(pkgData?.lastPublish).format("MMM D, YYYY")}
-          </span>
-          <span className="sr-only">last published</span>
-        </div>
-        <div className="flex items-center gap-1.5">
-          <File className="h-4 w-4 text-gray-300" />
-          <span className="text-sm font-medium text-gray-400">
-            {pkgData?.unpackedSize}
-          </span>
-          <span className="sr-only">unpacked size</span>
-        </div>
+        {isDone && pkgData.downloads ? (
+          <div className="flex items-center gap-1.5">
+            <Download className="h-4 w-4 text-gray-300" />
+            <span className="text-sm font-medium text-gray-400">
+              {pkgData.downloads ? pkgData.downloads.toLocaleString() : "N/A"}
+            </span>
+            <span className="sr-only">downloads</span>
+          </div>
+        ) : (
+          <ContentLoading srText="loading downloads" />
+        )}
+        {isDone && pkgData.lastPublish ? (
+          <div className="flex items-center gap-1.5">
+            <Calendar className="h-4 w-4 text-gray-300" />
+            <span className="text-sm font-medium text-gray-400">
+              {pkgData.lastPublish
+                ? dayjs(pkgData.lastPublish).format("MMM D, YYYY")
+                : "N/A"}
+            </span>
+            <span className="sr-only">last publish</span>
+          </div>
+        ) : (
+          <ContentLoading srText="loading last publish" />
+        )}
+        {isDone && pkgData.unpackedSize ? (
+          <div className="flex items-center gap-1.5">
+            <File className="h-4 w-4 text-gray-300" />
+            <span className="text-sm font-medium text-gray-400">
+              {pkgData.unpackedSize ? pkgData.unpackedSize : "N/A"}
+            </span>
+            <span className="sr-only">unpacked size</span>
+          </div>
+        ) : (
+          <ContentLoading srText="loading unpacked size" />
+        )}
       </div>
     </div>
   );
