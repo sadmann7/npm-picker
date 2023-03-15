@@ -56,3 +56,57 @@ export type Package = {
   unpackedSize?: string;
   lastPublish?: string;
 };
+
+export type PackageData = {
+  metadata: {
+    date: string;
+    dependencies: {
+      [key: string]: string;
+    };
+    description: string;
+    devDependencies: {
+      [key: string]: string;
+    };
+    hasTestScript: boolean;
+    keywords: string[];
+    license: string;
+    links: {
+      bugs: string;
+      homepage: string;
+      npm: string;
+      repository: string;
+    };
+    maintainers: {
+      username: string;
+      email: string;
+    }[];
+    name: string;
+    peerDependencies: {
+      [key: string]: string;
+    };
+    publisher: {
+      username: string;
+      email: string;
+    };
+    readme: string;
+    releases: {
+      from: string;
+      to: string;
+      count: number;
+    }[];
+    repository: {
+      type: string;
+      url: string;
+    };
+    scope: string;
+    version: string;
+  };
+  npm: {
+    downloads: {
+      from: string;
+      to: string;
+      count: number;
+    }[];
+    starsCount: number;
+  };
+};
