@@ -20,6 +20,7 @@ export default function Home() {
   const frameworks = Object.values(FRAMEWORK);
 
   const [isLoading, setIsLoading] = useState(false);
+  const [isDone, setIsDone] = useState(false);
   const [generatedPackages, setGeneratedPackages] = useState("");
 
   // react-hook-form
@@ -56,16 +57,20 @@ export default function Home() {
     const reader = responseData.getReader();
     const decoder = new TextDecoder();
     let done = false;
+    setIsDone(done);
 
     while (!done) {
       const { value, done: doneReading } = await reader.read();
       done = doneReading;
       const chunkValue = decoder.decode(value);
       setGeneratedPackages((prev) => prev + chunkValue);
+      setIsDone(done);
     }
 
     setIsLoading(false);
   };
+
+  console.log(isDone);
 
   return (
     <>
@@ -92,7 +97,11 @@ export default function Home() {
                 </Button>
                 <div className="grid w-full gap-2">
                   {generatedPackages.split("\n").map((pkg) => (
-                    <PackageCard key={crypto.randomUUID()} pkg={pkg} />
+                    <PackageCard
+                      key={crypto.randomUUID()}
+                      data={pkg}
+                      isDone={isDone}
+                    />
                   ))}
                 </div>
               </div>
@@ -174,25 +183,32 @@ export default function Home() {
 }
 
 // PackageCard.tsx
-const PackageCard = ({ pkg }: { pkg: string }) => {
-  const formattedPkg = pkg.replace(/[0-9]+. /, "").trim();
+const PackageCard = ({ data, isDone }: { data: string; isDone: boolean }) => {
+  const formattedPkg = data.replace(/[0-9]+. /, "").trim();
   const [name, description] = formattedPkg.split(": ");
-  const [scrapedPkg, setScrapedPkg] = useState<Package>();
+  const [pkgData, setPkgData] = useState<Package>({
+    name: "",
+    downloads: "",
+    lastPublish: "",
+    repository: "",
+    unpackedSize: "",
+  });
 
   useEffect(() => {
+    if (!isDone) return;
     const fetchPackage = async () => {
-      const response = await fetch("/api/scrape", {
+      const response = await fetch("/api/getPkgData", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ name }),
       });
-      const data = await response.json();
-      setScrapedPkg(data);
+      const data = (await response.json()) as Package;
+      setPkgData(data);
     };
     fetchPackage();
-  }, [pkg, name]);
+  }, [name, isDone]);
 
   return (
     <div className="grid gap-1 rounded-md bg-gray-600/60 px-6 pt-3 pb-5 shadow-md backdrop-blur-sm backdrop-filter">
@@ -202,9 +218,9 @@ const PackageCard = ({ pkg }: { pkg: string }) => {
         </h2>
         <div className="flex items-center gap-2.5">
           <a
-            href={scrapedPkg?.repository}
+            href={`https://${pkgData?.repository}`}
             target="_blank"
-            rel="noreferrer"
+            rel="noreferrer noopener"
             className="flex items-center gap-1.5 text-sm font-medium text-gray-400 hover:text-gray-50"
           >
             <span className="sr-only">View on GitHub</span>
@@ -226,21 +242,21 @@ const PackageCard = ({ pkg }: { pkg: string }) => {
         <div className="flex items-center gap-1.5">
           <Download className="h-4 w-4 text-gray-300" />
           <span className="text-sm font-medium text-gray-400">
-            {scrapedPkg?.downloads?.toLocaleString()}
+            {pkgData?.downloads?.toLocaleString()}
           </span>
           <span className="sr-only">downloads</span>
         </div>
         <div className="flex items-center gap-1.5">
           <Calendar className="h-4 w-4 text-gray-300" />
           <span className="text-sm font-medium text-gray-400">
-            {dayjs(scrapedPkg?.lastPublish).format("MMM D, YYYY")}
+            {dayjs(pkgData?.lastPublish).format("MMM D, YYYY")}
           </span>
           <span className="sr-only">last published</span>
         </div>
         <div className="flex items-center gap-1.5">
           <File className="h-4 w-4 text-gray-300" />
           <span className="text-sm font-medium text-gray-400">
-            {scrapedPkg?.unpackedSize}
+            {pkgData?.unpackedSize}
           </span>
           <span className="sr-only">unpacked size</span>
         </div>
