@@ -1,7 +1,10 @@
 import { Icons } from "@/components/Icons";
+import { useAppContext } from "@/contexts/AppProvider";
 import Link from "next/link";
 
 const Header = () => {
+  const { setGeneratedPkgs } = useAppContext();
+
   return (
     <header
       aria-label="header"
@@ -11,6 +14,7 @@ const Header = () => {
         <Link
           aria-label="navigate to home page"
           href="/"
+          onClick={() => setGeneratedPkgs("")}
           className="flex items-center gap-2 text-white transition-colors hover:text-gray-100"
         >
           <Icons.logo aria-hidden="true" className="h-6 w-6" />

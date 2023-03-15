@@ -2,6 +2,7 @@ import { Icons } from "@/components/Icons";
 import Button from "@/components/ui/Button";
 import ContentLoading from "@/components/ui/ContentLoading";
 import DropdownSelect from "@/components/ui/DropdownSelect";
+import { useAppContext } from "@/contexts/AppProvider";
 import { FRAMEWORK, type Package } from "@/types/globals";
 import { zodResolver } from "@hookform/resolvers/zod";
 import dayjs from "dayjs";
@@ -20,9 +21,9 @@ type Inputs = z.infer<typeof schema>;
 export default function Home() {
   const frameworks = Object.values(FRAMEWORK);
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [isDone, setIsDone] = useState(false);
-  const [generatedPackages, setGeneratedPackages] = useState("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isDone, setIsDone] = useState<boolean>(false);
+  const { generatedPkgs, setGeneratedPkgs } = useAppContext();
 
   // react-hook-form
   const { register, handleSubmit, formState, control, reset } = useForm<Inputs>(
@@ -33,7 +34,7 @@ export default function Home() {
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     // console.log(data);
-    setGeneratedPackages("");
+    setGeneratedPkgs("");
     setIsLoading(true);
     const response = await fetch("/api/generate", {
       method: "POST",
@@ -64,10 +65,11 @@ export default function Home() {
       const { value, done: doneReading } = await reader.read();
       done = doneReading;
       const chunkValue = decoder.decode(value);
-      setGeneratedPackages((prev) => prev + chunkValue);
+      setGeneratedPkgs((prev) => prev + chunkValue);
       setIsDone(done);
     }
 
+    reset();
     setIsLoading(false);
   };
 
@@ -78,7 +80,7 @@ export default function Home() {
       </Head>
       <main className="w-full pt-32 pb-32">
         <div className="container flex max-w-6xl flex-col items-center justify-center gap-10">
-          {generatedPackages ? (
+          {generatedPkgs ? (
             <Fragment>
               <h1 className="max-w-2xl text-center text-3xl font-bold leading-tight text-gray-50 sm:text-5xl sm:leading-tight">
                 Here are your packages
@@ -88,14 +90,13 @@ export default function Home() {
                   aria-label="search again"
                   className="w-fit"
                   onClick={() => {
-                    setGeneratedPackages("");
-                    reset();
+                    setGeneratedPkgs("");
                   }}
                 >
                   Search again
                 </Button>
                 <div className="grid w-full gap-2">
-                  {generatedPackages.split("\n").map((pkg) => (
+                  {generatedPkgs.split("\n").map((pkg) => (
                     <PackageCard
                       key={crypto.randomUUID()}
                       data={pkg}

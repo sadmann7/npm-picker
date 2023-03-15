@@ -29,14 +29,14 @@ const ContentLoading = ({
       ) : (
         <ContentLoader
           speed={2}
-          width={20}
-          height={20}
-          viewBox="0 0 20 20"
+          width={16}
+          height={16}
+          viewBox="0 0 16 16"
           backgroundColor="#9ca3af"
           foregroundColor="#f3f4f6"
           {...props}
         >
-          <circle cx={9} cy={9} r={9} />
+          <circle cx={8} cy={8} r={8} />
         </ContentLoader>
       )}
     </Fragment>
