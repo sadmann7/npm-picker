@@ -15,7 +15,7 @@ import { z } from "zod";
 
 const schema = z.object({
   requirement: z.string().min(1, { message: "Please enter your requirement" }),
-  framework: z.nativeEnum(FRAMEWORK).default(FRAMEWORK.REACT),
+  framework: z.nativeEnum(FRAMEWORK).default(FRAMEWORK.NOT_SPECIFIED),
 });
 type Inputs = z.infer<typeof schema>;
 
@@ -31,7 +31,7 @@ export default function Home() {
     { resolver: zodResolver(schema) }
   );
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    // console.log(data);
+    console.log(data);
     setGeneratedPkgs("");
     setIsLoading(true);
     const response = await fetch("/api/generate", {
@@ -109,8 +109,8 @@ export default function Home() {
             ) : (
               <Fragment>
                 <h1 className="max-w-2xl text-center text-3xl font-bold leading-tight text-gray-50 sm:text-5xl sm:leading-tight">
-                  Find the best npm{" "}
-                  <span className="text-blue-500">packages</span> for your
+                  Find the best{" "}
+                  <span className="text-blue-500">npm packages</span> for your
                   project
                 </h1>
                 <form
@@ -134,7 +134,7 @@ export default function Home() {
                       id="requirement"
                       rows={2}
                       className="w-full rounded-md border-gray-400 bg-transparent px-4 pt-2.5 text-base text-gray-50 transition-colors placeholder:text-gray-400 focus:border-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-offset-2 focus:ring-offset-gray-800"
-                      placeholder="e.g. Table"
+                      placeholder="e.g. Time"
                       {...register("requirement")}
                       onKeyDown={(e) => {
                         if (!formState.isValid || isLoading) return;
