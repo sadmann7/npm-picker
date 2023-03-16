@@ -34,7 +34,7 @@ const Header = () => {
           onClick={() => setGeneratedPkgs("")}
           className="flex items-center gap-2 text-white transition-colors hover:text-gray-100"
         >
-          <Icons.logo aria-hidden="true" className="h-6 w-6" />
+          <Icons.logo className="h-6 w-6" aria-hidden="true" />
           <span className="text-xl font-medium">npm Picker</span>
         </Link>
         <a
@@ -42,13 +42,12 @@ const Header = () => {
           href="https://github.com/sadmann7/npm-picker"
           target="_blank"
           rel="noopener noreferrer"
+          className="flex items-center gap-2 rounded-full bg-blue-600 px-2 py-2 text-base transition-colors hover:bg-blue-700 active:scale-95 xxs:px-4"
         >
-          <div className="flex items-center gap-2 rounded-full bg-blue-600 px-2 py-2 text-base transition hover:bg-blue-700 active:scale-95 xxs:px-4">
-            <Icons.gitHub aria-hidden="true" className="h-5 w-5" />
-            <span className="sr-only text-xs text-gray-100 xxs:not-sr-only sm:text-sm">
-              Star on Github
-            </span>
-          </div>
+          <Icons.gitHub className="h-5 w-5" aria-hidden="true" />
+          <span className="sr-only text-xs text-gray-100 xxs:not-sr-only sm:text-sm">
+            Star on Github
+          </span>
         </a>
       </nav>
     </header>

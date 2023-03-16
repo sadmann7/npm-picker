@@ -23,6 +23,7 @@
     "eslint": "8.36.0",
     "eslint-config-next": "13.2.4",
     "eventsource-parser": "^0.1.0",
+    "framer-motion": "^10.3.2",
     "jsdom": "^21.1.1",
     "lucide-react": "^0.125.0",
     "next": "13.2.4",

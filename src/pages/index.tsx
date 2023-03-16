@@ -6,11 +6,11 @@ import { useAppContext } from "@/contexts/AppProvider";
 import { FRAMEWORK, type Package } from "@/types/globals";
 import { zodResolver } from "@hookform/resolvers/zod";
 import dayjs from "dayjs";
+import { AnimatePresence } from "framer-motion";
 import { Calendar, Download, File } from "lucide-react";
 import Head from "next/head";
 import { Fragment, useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { twMerge } from "tailwind-merge";
 import { z } from "zod";
 
 const schema = z.object({
@@ -78,109 +78,112 @@ export default function Home() {
       </Head>
       <main className="w-full pt-32 pb-32">
         <div className="container flex max-w-6xl flex-col items-center justify-center gap-10">
-          {generatedPkgs ? (
-            <Fragment>
-              <h1 className="max-w-2xl text-center text-3xl font-bold leading-tight text-gray-50 sm:text-5xl sm:leading-tight">
-                Here are your packages
-              </h1>
-              <div className="grid w-full max-w-2xl place-items-center gap-10">
-                <Button
-                  aria-label="search again"
-                  className="w-fit"
-                  onClick={() => {
-                    setGeneratedPkgs("");
-                  }}
-                  disabled={isLoading || !isDone}
-                >
-                  Search again
-                </Button>
-                <div className="grid w-full gap-2">
-                  {generatedPkgs.split("\n").map((pkg) => (
-                    <PackageCard
-                      key={crypto.randomUUID()}
-                      data={pkg}
-                      isDone={isDone}
-                    />
-                  ))}
-                </div>
-              </div>
-            </Fragment>
-          ) : (
-            <Fragment>
-              <h1 className="max-w-2xl text-center text-3xl font-bold leading-tight text-gray-50 sm:text-5xl sm:leading-tight">
-                Find the best npm{" "}
-                <span className="text-blue-500">packages</span> for your project
-              </h1>
-              <form
-                aria-label="form for finding NPM packages"
-                className="grid w-full max-w-xl gap-7"
-                onSubmit={(...args) => void handleSubmit(onSubmit)(...args)}
-              >
-                <fieldset className="grid gap-5">
-                  <label
-                    htmlFor="requirement"
-                    className="flex items-center gap-2.5 text-sm font-medium sm:text-base"
-                  >
-                    <span className="grid h-7 w-7 place-items-center rounded-full bg-gray-500 text-xs font-bold text-white sm:text-sm">
-                      1
-                    </span>
-                    <span className="flex-1 text-gray-50">
-                      Enter your requirement
-                    </span>
-                  </label>
-                  <textarea
-                    id="requirement"
-                    rows={2}
-                    className="w-full rounded-md border-gray-400 bg-transparent px-4 pt-2.5 text-base text-gray-50 transition-colors placeholder:text-gray-400 focus:border-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-offset-2 focus:ring-offset-gray-800"
-                    placeholder="e.g. Table"
-                    {...register("requirement")}
-                    onKeyDown={(e) => {
-                      if (!formState.isValid || isLoading) return;
-                      if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
-                        handleSubmit(onSubmit)();
-                      }
+          <AnimatePresence mode="wait">
+            {generatedPkgs ? (
+              <Fragment>
+                <h1 className="max-w-2xl text-center text-3xl font-bold leading-tight text-gray-50 sm:text-5xl sm:leading-tight">
+                  Here are your packages
+                </h1>
+                <div className="grid w-full max-w-2xl place-items-center gap-10">
+                  <Button
+                    aria-label="search again"
+                    className="w-fit"
+                    onClick={() => {
+                      setGeneratedPkgs("");
                     }}
-                  />
-                  {formState.errors.requirement ? (
-                    <p className="-mt-1.5 text-sm font-medium text-red-500">
-                      {formState.errors.requirement.message}
-                    </p>
-                  ) : null}
-                </fieldset>
-                <fieldset className="grid gap-5">
-                  <label
-                    htmlFor="framework"
-                    className="flex items-center gap-2.5 text-sm font-medium  sm:text-base"
+                    disabled={isLoading || !isDone}
                   >
-                    <span className="grid h-7 w-7 place-items-center rounded-full bg-gray-500 text-xs font-bold text-white sm:text-sm">
-                      2
-                    </span>
-                    <span className="flex-1 text-gray-50">
-                      Select your framework
-                    </span>
-                  </label>
-                  <DropdownSelect
-                    control={control}
-                    name="framework"
-                    options={frameworks}
-                  />
-                  {formState.errors.framework ? (
-                    <p className="-mt-1.5 text-sm font-medium text-red-500">
-                      {formState.errors.framework.message}
-                    </p>
-                  ) : null}
-                </fieldset>
-                <Button
-                  aria-label="Find packages"
-                  className="w-full"
-                  isLoading={isLoading}
-                  disabled={isLoading}
+                    Search again
+                  </Button>
+                  <div className="grid w-full gap-2">
+                    {generatedPkgs.split("\n").map((pkg) => (
+                      <PackageCard
+                        key={crypto.randomUUID()}
+                        data={pkg}
+                        isDone={isDone}
+                      />
+                    ))}
+                  </div>
+                </div>
+              </Fragment>
+            ) : (
+              <Fragment>
+                <h1 className="max-w-2xl text-center text-3xl font-bold leading-tight text-gray-50 sm:text-5xl sm:leading-tight">
+                  Find the best npm{" "}
+                  <span className="text-blue-500">packages</span> for your
+                  project
+                </h1>
+                <form
+                  aria-label="form for finding NPM packages"
+                  className="grid w-full max-w-xl gap-7"
+                  onSubmit={(...args) => void handleSubmit(onSubmit)(...args)}
                 >
-                  Find packages
-                </Button>
-              </form>
-            </Fragment>
-          )}
+                  <fieldset className="grid gap-5">
+                    <label
+                      htmlFor="requirement"
+                      className="flex items-center gap-2.5 text-sm font-medium sm:text-base"
+                    >
+                      <span className="grid h-7 w-7 place-items-center rounded-full bg-gray-500 text-xs font-bold text-white sm:text-sm">
+                        1
+                      </span>
+                      <span className="flex-1 text-gray-50">
+                        Enter your requirement
+                      </span>
+                    </label>
+                    <textarea
+                      id="requirement"
+                      rows={2}
+                      className="w-full rounded-md border-gray-400 bg-transparent px-4 pt-2.5 text-base text-gray-50 transition-colors placeholder:text-gray-400 focus:border-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-offset-2 focus:ring-offset-gray-800"
+                      placeholder="e.g. Table"
+                      {...register("requirement")}
+                      onKeyDown={(e) => {
+                        if (!formState.isValid || isLoading) return;
+                        if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+                          handleSubmit(onSubmit)();
+                        }
+                      }}
+                    />
+                    {formState.errors.requirement ? (
+                      <p className="-mt-1.5 text-sm font-medium text-red-500">
+                        {formState.errors.requirement.message}
+                      </p>
+                    ) : null}
+                  </fieldset>
+                  <fieldset className="grid gap-5">
+                    <label
+                      htmlFor="framework"
+                      className="flex items-center gap-2.5 text-sm font-medium  sm:text-base"
+                    >
+                      <span className="grid h-7 w-7 place-items-center rounded-full bg-gray-500 text-xs font-bold text-white sm:text-sm">
+                        2
+                      </span>
+                      <span className="flex-1 text-gray-50">
+                        Select your framework
+                      </span>
+                    </label>
+                    <DropdownSelect
+                      control={control}
+                      name="framework"
+                      options={frameworks}
+                    />
+                    {formState.errors.framework ? (
+                      <p className="-mt-1.5 text-sm font-medium text-red-500">
+                        {formState.errors.framework.message}
+                      </p>
+                    ) : null}
+                  </fieldset>
+                  <Button
+                    aria-label="Find packages"
+                    className="w-full"
+                    isLoading={isLoading}
+                    disabled={isLoading}
+                  >
+                    Find packages
+                  </Button>
+                </form>
+              </Fragment>
+            )}
+          </AnimatePresence>
         </div>
       </main>
     </>
@@ -216,25 +219,29 @@ const PackageCard = ({ data, isDone }: { data: string; isDone: boolean }) => {
   }, [name, isDone]);
 
   return (
-    <div className="grid gap-1 rounded-md bg-gray-600/60 px-6 pt-3 pb-5 shadow-md backdrop-blur-sm backdrop-filter">
+    <div className="grid w-full gap-1 rounded-md bg-gray-600/60 px-6 pt-3 pb-5 shadow-md backdrop-blur-sm backdrop-filter">
       <div className="flex flex-col justify-between gap-2 xxs:flex-row sm:items-center">
         <h2 className="text-lg font-bold capitalize text-gray-50 sm:text-xl">
           {name}
         </h2>
         <div className="flex items-center gap-2.5">
-          {isDone && pkgData.repository ? (
-            <a
-              href={`https://${pkgData.repository}`}
-              target="_blank"
-              rel="noreferrer noopener"
-              className={twMerge(
-                "flex items-center gap-1.5 text-sm font-medium text-gray-400 hover:text-gray-50",
-                !pkgData.repository?.length && "pointer-events-none opacity-50"
-              )}
-            >
-              <span className="sr-only">View on GitHub</span>
-              <Icons.gitHub className="h-4 w-4 text-gray-300 transition-colors hover:text-gray-50 active:scale-95" />
-            </a>
+          {isDone ? (
+            pkgData.repository ? (
+              <a
+                href={`https://${pkgData.repository}`}
+                target="_blank"
+                rel="noreferrer noopener"
+                className="text-gray-300 transition-colors hover:text-gray-50 active:scale-95"
+              >
+                <Icons.gitHub className="h-4 w-4" />
+                <span className="sr-only">View on GitHub</span>
+              </a>
+            ) : (
+              <div className="opacity-60">
+                <Icons.gitHub className="h-4 w-4 text-gray-300" />
+                <span className="sr-only">No GitHub repository</span>
+              </div>
+            )
           ) : (
             <ContentLoading srText="loading github icon" variant="circle" />
           )}
@@ -242,44 +249,44 @@ const PackageCard = ({ data, isDone }: { data: string; isDone: boolean }) => {
             href={`https://www.npmjs.com/package/${name}`}
             target="_blank"
             rel="noreferrer"
-            className="flex items-center gap-1.5 "
+            className="text-gray-300 transition-colors hover:text-gray-50 active:scale-95"
           >
+            <Icons.npm className="h-8 w-8" />
             <span className="sr-only">View on npm</span>
-            <Icons.npm className="h-8 w-8 text-gray-300 transition-colors hover:text-gray-50 active:scale-95" />
           </a>
         </div>
       </div>
       <p className="text-sm text-gray-300 sm:text-base">{description}</p>
       <div className="mt-2 flex flex-wrap items-center gap-2.5">
-        {isDone && pkgData.downloads ? (
+        {isDone ? (
           <div className="flex items-center gap-1.5">
             <Download className="h-4 w-4 text-gray-300" />
             <span className="text-sm font-medium text-gray-400">
-              {pkgData.downloads?.length ? pkgData.downloads : "N/A"}
+              {pkgData.downloads ? pkgData.downloads : "N/A"}
             </span>
             <span className="sr-only">downloads</span>
           </div>
         ) : (
           <ContentLoading srText="loading downloads" />
         )}
-        {isDone && pkgData.lastPublish ? (
+        {isDone ? (
           <div className="flex items-center gap-1.5">
             <Calendar className="h-4 w-4 text-gray-300" />
             <span className="text-sm font-medium text-gray-400">
-              {pkgData.lastPublish?.length
+              {pkgData.lastPublish
                 ? dayjs(pkgData.lastPublish).format("MMM D, YYYY")
-                : "N/A"}
+                : " N/A"}
             </span>
             <span className="sr-only">last publish</span>
           </div>
         ) : (
           <ContentLoading srText="loading last publish" />
         )}
-        {isDone && pkgData.unpackedSize ? (
+        {isDone ? (
           <div className="flex items-center gap-1.5">
             <File className="h-4 w-4 text-gray-300" />
             <span className="text-sm font-medium text-gray-400">
-              {pkgData.unpackedSize?.length ? pkgData.unpackedSize : "N/A"}
+              {pkgData.unpackedSize ? pkgData.unpackedSize : "N/A"}
             </span>
             <span className="sr-only">unpacked size</span>
           </div>
