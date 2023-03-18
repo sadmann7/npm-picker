@@ -225,23 +225,16 @@ const PackageCard = ({ data, isDone }: { data: string; isDone: boolean }) => {
           {name}
         </h2>
         <div className="flex items-center gap-2.5">
-          {isDone ? (
-            pkgData.repository ? (
-              <a
-                href={`https://${pkgData.repository}`}
-                target="_blank"
-                rel="noreferrer noopener"
-                className="text-gray-300 transition-colors hover:text-gray-50 active:scale-95"
-              >
-                <Icons.gitHub className="h-4 w-4" />
-                <span className="sr-only">View on GitHub</span>
-              </a>
-            ) : (
-              <div className="opacity-60">
-                <Icons.gitHub className="h-4 w-4 text-gray-300" />
-                <span className="sr-only">No GitHub repository</span>
-              </div>
-            )
+          {isDone && pkgData.repository ? (
+            <a
+              href={`https://${pkgData.repository ?? "github.com"}`}
+              target="_blank"
+              rel="noreferrer noopener"
+              className="text-gray-300 transition-colors hover:text-gray-50 active:scale-95"
+            >
+              <Icons.gitHub className="h-4 w-4" />
+              <span className="sr-only">View on GitHub</span>
+            </a>
           ) : (
             <ContentLoading srText="loading github icon" variant="circle" />
           )}
@@ -258,35 +251,33 @@ const PackageCard = ({ data, isDone }: { data: string; isDone: boolean }) => {
       </div>
       <p className="text-sm text-gray-300 sm:text-base">{description}</p>
       <div className="mt-2 flex flex-wrap items-center gap-2.5">
-        {isDone ? (
+        {isDone && pkgData.downloads ? (
           <div className="flex items-center gap-1.5">
             <Download className="h-4 w-4 text-gray-300" />
             <span className="text-sm font-medium text-gray-400">
-              {pkgData.downloads ? pkgData.downloads : "N/A"}
+              {pkgData.downloads ?? "N/A"}
             </span>
             <span className="sr-only">downloads</span>
           </div>
         ) : (
           <ContentLoading srText="loading downloads" />
         )}
-        {isDone ? (
+        {isDone && pkgData.lastPublish ? (
           <div className="flex items-center gap-1.5">
             <Calendar className="h-4 w-4 text-gray-300" />
             <span className="text-sm font-medium text-gray-400">
-              {pkgData.lastPublish
-                ? dayjs(pkgData.lastPublish).format("MMM D, YYYY")
-                : " N/A"}
+              {dayjs(pkgData.lastPublish).format("MMM D, YYYY") ?? " N/A"}
             </span>
             <span className="sr-only">last publish</span>
           </div>
         ) : (
           <ContentLoading srText="loading last publish" />
         )}
-        {isDone ? (
+        {isDone && pkgData.unpackedSize ? (
           <div className="flex items-center gap-1.5">
             <File className="h-4 w-4 text-gray-300" />
             <span className="text-sm font-medium text-gray-400">
-              {pkgData.unpackedSize ? pkgData.unpackedSize : "N/A"}
+              {pkgData.unpackedSize ?? "N/A"}
             </span>
             <span className="sr-only">unpacked size</span>
           </div>

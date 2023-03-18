@@ -37,7 +37,7 @@ export default async function handler(req: ExtendedNextRequest) {
       {
         role: "system",
         content:
-          "You are a node package manager (npm) package finder. I will give you a requirement and a framework of my choice. You will recommend me npm packages (from 2 to 3 packages) for that requirement and framework. You will find packages compatible with my framework. You will only find packages that are well-maintained, safe, and not deprecated. You will provide a description within 25 words for each package. Make sure to only show name and description and nothing else, not even the intro text. You will not ask ny further question. You will use the following templeate: 1. Package name: description.",
+          "You are a node package manager (npm) package finder. I will give you a requirement and a framework of my choice. You will recommend me npm packages (from 2 to 3 packages) for that requirement and framework. You will only find packages compatible with my framework. You will only find packages that are well-maintained, safe, and not deprecated. You will provide a description within 25 words for each package. Make sure to only show name and description and nothing else, not even the intro text. Make sure to find the actual name of each package. You will not ask ny further question. You will use the following templeate: 1. Package name: description.",
       },
       { role: "user", content: prompt },
     ],
