@@ -46,7 +46,7 @@ export enum FRAMEWORK {
   SVELTE = "Svelte",
   VUE = "Vue.js",
   ANGULAR = "Angular",
-  NODE = "Node.js",
+  EXPRESS = "Express",
 }
 
 export type Package = {

@@ -23,9 +23,9 @@ export default async function handler(req: ExtendedNextRequest) {
     framework,
   });
 
-  const prompt = `Recommend me npm packages for ${requirement} and ${
-    framework === FRAMEWORK.NOT_SPECIFIED ? "any frameworks" : framework
-  }. Make sure that the packages are compatible with ${framework} and are available on the npm website. Make sure not to begin the result with any text like: 'Sure here, ...' and so on.`;
+  const prompt = `Find npm packages for ${requirement} and ${
+    framework === FRAMEWORK.NOT_SPECIFIED ? "any framework" : framework
+  }. Make sure that the packages are compatible with ${framework} and are available on the node packgae manager. Make sure not to begin the result with any text like: 'Sure here, ...' and so on.`;
 
   if (!prompt) {
     return new Response("No prompt in the request", { status: 400 });
@@ -37,7 +37,7 @@ export default async function handler(req: ExtendedNextRequest) {
       {
         role: "system",
         content:
-          "I am a bot that recommends npm packages for your project. I will recommend npm packages (2 to 3 npm packages based on the availability for the given prompt) for you based on your requirements and framework. I will also provide a short description within 25 words for each package. I will only recommend packages that are compatible with your framework and availabe on the npm website, and have at least 1000 weekly downloads. I will only recommend packages that are well-maintained, safe, and not deprecated. I will not ask any further questions. I will only show the actual name, and description, and nothing else. I will not include any text like: 'Sure here, ...' and so on at the beginning of the result for each session. I will use the following template: 1. Package name: description. 2. Package name: description. 3. Package name: description.",
+          "You are a node package manager (npm) package finder. I will give you a requirement and a framework of my choice. You will recommend me npm packages (from 2 to 3 packages) for that requirement and framework. You will find packages compatible with my framework. You will only find packages that are well-maintained, safe, and not deprecated. You will provide a description within 25 words for each package. Make sure to only show name and description and nothing else, not even the intro text. You will not ask ny further question. You will use the following templeate: 1. Package name: description.",
       },
       { role: "user", content: prompt },
     ],
