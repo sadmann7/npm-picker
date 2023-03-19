@@ -11,6 +11,7 @@ import { Calendar, Download, File } from "lucide-react";
 import Head from "next/head";
 import { Fragment, useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { toast } from "react-hot-toast";
 import { z } from "zod";
 
 const schema = z.object({
@@ -205,15 +206,23 @@ const PackageCard = ({ data, isDone }: { data: string; isDone: boolean }) => {
   useEffect(() => {
     if (!isDone) return;
     const fetchPackage = async () => {
-      const response = await fetch("/api/getPkgData", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name }),
-      });
-      const data = (await response.json()) as Package;
-      setPkgData(data);
+      try {
+        const response = await fetch("/api/getPkgData", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ name }),
+        });
+        const data = (await response.json()) as Package;
+        setPkgData(data);
+      } catch (error) {
+        if (error instanceof Error) {
+          toast.error(error.message);
+        } else {
+          toast.error("Something went wrong");
+        }
+      }
     };
     fetchPackage();
   }, [name, isDone]);

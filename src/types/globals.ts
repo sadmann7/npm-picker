@@ -34,7 +34,7 @@ export interface ExtendedNextRequest extends NextRequest {
   }>;
 }
 
-export interface npmResponse extends NextApiRequest {
+export interface ExtendedNextApiRequestPkg extends NextApiRequest {
   body: {
     name: string;
   };
@@ -50,14 +50,14 @@ export enum FRAMEWORK {
 }
 
 export type Package = {
-  name: string;
+  name?: string;
   repository?: string;
   downloads?: string;
   unpackedSize?: string;
   lastPublish?: string;
 };
 
-export type PackageData = {
+export type PkgData = {
   metadata: {
     date: string;
     dependencies: {
