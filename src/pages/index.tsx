@@ -3,7 +3,8 @@ import Button from "@/components/ui/Button";
 import ContentLoading from "@/components/ui/ContentLoading";
 import DropdownSelect from "@/components/ui/DropdownSelect";
 import { useAppContext } from "@/contexts/AppProvider";
-import { FRAMEWORK, type Package } from "@/types/globals";
+import { ChartData, FRAMEWORK, PkgData, type Package } from "@/types/globals";
+import { getChartData } from "@/utils/npm";
 import { zodResolver } from "@hookform/resolvers/zod";
 import dayjs from "dayjs";
 import { AnimatePresence } from "framer-motion";
@@ -26,6 +27,7 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isDone, setIsDone] = useState<boolean>(false);
   const { generatedPkgs, setGeneratedPkgs } = useAppContext();
+  const [chartData, setChartData] = useState<ChartData[]>([]);
 
   // react-hook-form
   const { register, handleSubmit, formState, control, reset } = useForm<Inputs>(
@@ -72,12 +74,37 @@ export default function Home() {
     setIsLoading(false);
   };
 
+  useEffect(() => {
+    if (!generatedPkgs || !isDone) return;
+    const fetchPkgDownloads = async () => {
+      const pkgNames = generatedPkgs.split("\n").map((pkg) => {
+        const formattedPkg = pkg.replace(/[0-9]+. /, "").trim();
+        const [name, _] = formattedPkg.split(": ");
+        return name;
+      });
+      const pkgDownloads = Promise.all(
+        pkgNames.map(async (pkgName) => {
+          const response = await fetch(
+            `https://api.npmjs.org/downloads/range/last-month/${pkgName}`
+          );
+          const data = (await response.json()) as PkgData;
+          return data;
+        })
+      );
+
+      const pkgDownloadsData = await pkgDownloads;
+      const chartedData = pkgDownloadsData.map((pkg) => getChartData(pkg));
+      console.log(chartedData);
+    };
+    fetchPkgDownloads();
+  }, [generatedPkgs, isDone]);
+
   return (
     <>
       <Head>
         <title>npm Package Picker</title>
       </Head>
-      <main className="w-full pt-32 pb-32">
+      <main className="w-full pt-40 pb-32">
         <div className="container flex max-w-6xl flex-col items-center justify-center gap-10">
           <AnimatePresence mode="wait">
             {generatedPkgs ? (
@@ -86,16 +113,28 @@ export default function Home() {
                   Here are your packages
                 </h1>
                 <div className="grid w-full max-w-2xl place-items-center gap-10">
-                  <Button
-                    aria-label="search again"
-                    className="w-fit"
-                    onClick={() => {
-                      setGeneratedPkgs("");
-                    }}
-                    disabled={isLoading || !isDone}
-                  >
-                    Search again
-                  </Button>
+                  <div className="flex items-center gap-2.5">
+                    <Button
+                      aria-label="Search again"
+                      className="w-fit"
+                      onClick={() => {
+                        setGeneratedPkgs("");
+                      }}
+                      disabled={isLoading || !isDone}
+                    >
+                      Search again
+                    </Button>
+                    <Button
+                      aria-label="Compare packages"
+                      className="w-fit"
+                      onClick={() => {
+                        setGeneratedPkgs("");
+                      }}
+                      disabled={isLoading || !isDone}
+                    >
+                      Compare packages
+                    </Button>
+                  </div>
                   <div className="grid w-full gap-2">
                     {generatedPkgs.split("\n").map((pkg) => (
                       <PackageCard
@@ -177,6 +216,7 @@ export default function Home() {
                     aria-label="Find packages"
                     className="w-full"
                     isLoading={isLoading}
+                    loadingVariant="spinner"
                     disabled={isLoading}
                   >
                     Find packages
