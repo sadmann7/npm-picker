@@ -2,6 +2,7 @@ import DefaultLayout from "@/components/layouts/DefaultLayout";
 import ToastWrapper from "@/components/ui/ToastWrapper";
 import { AppProvider } from "@/contexts/AppProvider";
 import "@/styles/globals.css";
+import { Analytics } from "@vercel/analytics/react";
 import type { NextPage } from "next";
 import type { AppProps } from "next/app";
 import Head from "next/head";
@@ -28,6 +29,7 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
         <title>npm Package Picker</title>
       </Head>
       {getLayout(<Component {...pageProps} />)}
+      <Analytics />
       <ToastWrapper />
     </AppProvider>
   );
