@@ -6,7 +6,7 @@ import { twMerge } from "tailwind-merge";
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState<boolean>(false);
-  const { setGeneratedPkgs } = useAppContext();
+  const { setGeneratedPkgs, setIsGraphView } = useAppContext();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -31,7 +31,10 @@ const Header = () => {
         <Link
           aria-label="navigate to home page"
           href="/"
-          onClick={() => setGeneratedPkgs("")}
+          onClick={() => {
+            setGeneratedPkgs("");
+            setIsGraphView(false);
+          }}
           className="flex items-center gap-2 text-white transition-colors hover:text-gray-100"
         >
           <Icons.logo className="h-6 w-6" aria-hidden="true" />

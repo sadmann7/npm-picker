@@ -28,9 +28,9 @@ export default function Home() {
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isDone, setIsDone] = useState<boolean>(false);
-  const { generatedPkgs, setGeneratedPkgs } = useAppContext();
+  const { generatedPkgs, setGeneratedPkgs, isGraphView, setIsGraphView } =
+    useAppContext();
   const [chartData, setChartData] = useState<ChartData[]>([]);
-  const [showGraph, setShowGraph] = useState(false);
 
   // react-hook-form
   const { register, handleSubmit, formState, control, reset } = useForm<Inputs>(
@@ -101,8 +101,8 @@ export default function Home() {
       const chartedData = pkgDownloadsData.map((pkg) => getChartData(pkg));
       setChartData(chartedData);
     };
-    showGraph && fetchPkgDownloads();
-  }, [generatedPkgs, isDone, showGraph]);
+    isGraphView && fetchPkgDownloads();
+  }, [generatedPkgs, isDone, isGraphView]);
 
   return (
     <>
@@ -124,20 +124,20 @@ export default function Home() {
                       className="w-fit"
                       onClick={() => {
                         setGeneratedPkgs("");
+                        setIsGraphView(false);
                       }}
                       disabled={isLoading || !isDone}
                     >
                       Search again
                     </Button>
                     <Toggle
-                      enabled={showGraph}
-                      setEnabled={setShowGraph}
+                      enabled={isGraphView}
+                      setEnabled={setIsGraphView}
                       disabled={isLoading || !isDone}
                       enabledLabel="Graph view"
                     />
                   </div>
-
-                  {showGraph ? (
+                  {isGraphView ? (
                     <div className="w-full max-w-6xl overflow-x-auto">
                       <div className="h-96 w-full min-w-[1024px]  ">
                         <Chart data={chartData} />
