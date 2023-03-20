@@ -1,10 +1,12 @@
+import Chart from "@/components/Chart";
 import { Icons } from "@/components/Icons";
 import Button from "@/components/ui/Button";
 import ContentLoading from "@/components/ui/ContentLoading";
 import DropdownSelect from "@/components/ui/DropdownSelect";
 import Toggle from "@/components/ui/Toggle";
 import { useAppContext } from "@/contexts/AppProvider";
-import { ChartData, FRAMEWORK, type Package } from "@/types/globals";
+import { ChartData, FRAMEWORK, PkgData, type Package } from "@/types/globals";
+import { getChartData } from "@/utils/npm";
 import { zodResolver } from "@hookform/resolvers/zod";
 import dayjs from "dayjs";
 import { AnimatePresence } from "framer-motion";
@@ -26,7 +28,7 @@ export default function Home() {
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isDone, setIsDone] = useState<boolean>(false);
-  const { generatedPkgs, setGeneratedPkgs, isGraphView, setIsGraphView } =
+  const { generatedPkgs, setGeneratedPkgs, isChartView, setIsChartView } =
     useAppContext();
   const [chartData, setChartData] = useState<ChartData[]>([]);
 
@@ -75,32 +77,38 @@ export default function Home() {
     setIsLoading(false);
   };
 
-  // toggle graph
-  // useEffect(() => {
-  //   if (!generatedPkgs || !isDone) return;
-  //   const fetchPkgDownloads = async () => {
-  //     if (!generatedPkgs || !isDone) return;
-  //     const pkgNames = generatedPkgs.split("\n").map((pkg) => {
-  //       const formattedPkg = pkg.replace(/[0-9]+. /, "").trim();
-  //       const [name, _] = formattedPkg.split(": ");
-  //       return name;
-  //     });
-  //     const pkgDownloads = Promise.all(
-  //       pkgNames.map(async (pkgName) => {
-  //         const response = await fetch(
-  //           `https://api.npmjs.org/downloads/range/last-year/${pkgName}`
-  //         );
-  //         const data = (await response.json()) as PkgData;
-  //         return data;
-  //       })
-  //     );
+  // toggle views
+  useEffect(() => {
+    if (!generatedPkgs || !isDone) return;
+    const fetchPkgDownloads = async () => {
+      try {
+        if (!generatedPkgs || !isDone) return;
+        const pkgNames = generatedPkgs.split("\n").map((pkg) => {
+          const formattedPkg = pkg.replace(/[0-9]+. /, "").trim();
+          const [name, _] = formattedPkg.split(": ");
+          return name;
+        });
+        const pkgDownloads = Promise.all(
+          pkgNames.map(async (pkgName) => {
+            const response = await fetch(
+              `https://api.npmjs.org/downloads/range/last-year/${pkgName}`
+            );
+            const data = (await response.json()) as PkgData;
+            return data;
+          })
+        );
 
-  //     const pkgDownloadsData = await pkgDownloads;
-  //     const chartedData = pkgDownloadsData.map((pkg) => getChartData(pkg));
-  //     setChartData(chartedData);
-  //   };
-  //   isGraphView && fetchPkgDownloads();
-  // }, [generatedPkgs, isDone, isGraphView]);
+        const pkgDownloadsData = await pkgDownloads;
+        const chartedData = pkgDownloadsData.map((pkg) => getChartData(pkg));
+        setChartData(chartedData);
+      } catch (error) {
+        error instanceof Error
+          ? toast.error(error.message)
+          : toast.error("Something went wrong");
+      }
+    };
+    isChartView && fetchPkgDownloads();
+  }, [generatedPkgs, isDone, isChartView]);
 
   return (
     <>
@@ -116,26 +124,42 @@ export default function Home() {
                   Here are your packages
                 </h1>
                 <div className="grid w-full place-items-center gap-10">
-                  <Button
-                    aria-label="Search again"
-                    className="w-fit"
-                    onClick={() => {
-                      setGeneratedPkgs("");
-                      setIsGraphView(false);
-                    }}
-                    disabled={isLoading || !isDone}
-                  >
-                    Search again
-                  </Button>
-                  <div className="grid w-full max-w-2xl gap-2">
-                    {generatedPkgs.split("\n").map((pkg) => (
-                      <PackageCard
-                        key={crypto.randomUUID()}
-                        data={pkg}
-                        isDone={isDone}
-                      />
-                    ))}
+                  <div className="flex items-center gap-5">
+                    <Button
+                      aria-label="Search again"
+                      className="w-fit"
+                      onClick={() => {
+                        setGeneratedPkgs("");
+                        setIsChartView(false);
+                      }}
+                      disabled={isLoading || !isDone}
+                    >
+                      Search again
+                    </Button>
+                    <Toggle
+                      enabled={isChartView}
+                      setEnabled={setIsChartView}
+                      enabledLabel="Compare"
+                      disabled={isLoading || !isDone}
+                    />
                   </div>
+                  {isChartView ? (
+                    <div className="w-full max-w-6xl overflow-x-auto">
+                      <div className="h-96 w-full min-w-[1024px]  ">
+                        <Chart data={chartData} />
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="grid w-full max-w-2xl gap-2">
+                      {generatedPkgs.split("\n").map((pkg) => (
+                        <PackageCard
+                          key={crypto.randomUUID()}
+                          data={pkg}
+                          isDone={isDone}
+                        />
+                      ))}
+                    </div>
+                  )}
                 </div>
               </Fragment>
             ) : (

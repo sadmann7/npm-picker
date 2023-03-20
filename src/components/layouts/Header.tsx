@@ -6,7 +6,7 @@ import { twMerge } from "tailwind-merge";
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState<boolean>(false);
-  const { setGeneratedPkgs, setIsGraphView } = useAppContext();
+  const { setGeneratedPkgs, setIsChartView } = useAppContext();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -33,7 +33,7 @@ const Header = () => {
           href="/"
           onClick={() => {
             setGeneratedPkgs("");
-            setIsGraphView(false);
+            setIsChartView(false);
           }}
           className="flex items-center gap-2 text-white transition-colors hover:text-gray-100"
         >
