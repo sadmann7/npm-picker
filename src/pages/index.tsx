@@ -1,12 +1,10 @@
-import Chart from "@/components/Chart";
 import { Icons } from "@/components/Icons";
 import Button from "@/components/ui/Button";
 import ContentLoading from "@/components/ui/ContentLoading";
 import DropdownSelect from "@/components/ui/DropdownSelect";
 import Toggle from "@/components/ui/Toggle";
 import { useAppContext } from "@/contexts/AppProvider";
-import { ChartData, FRAMEWORK, PkgData, type Package } from "@/types/globals";
-import { getChartData } from "@/utils/npm";
+import { ChartData, FRAMEWORK, type Package } from "@/types/globals";
 import { zodResolver } from "@hookform/resolvers/zod";
 import dayjs from "dayjs";
 import { AnimatePresence } from "framer-motion";
@@ -78,31 +76,31 @@ export default function Home() {
   };
 
   // toggle graph
-  useEffect(() => {
-    if (!generatedPkgs || !isDone) return;
-    const fetchPkgDownloads = async () => {
-      if (!generatedPkgs || !isDone) return;
-      const pkgNames = generatedPkgs.split("\n").map((pkg) => {
-        const formattedPkg = pkg.replace(/[0-9]+. /, "").trim();
-        const [name, _] = formattedPkg.split(": ");
-        return name;
-      });
-      const pkgDownloads = Promise.all(
-        pkgNames.map(async (pkgName) => {
-          const response = await fetch(
-            `https://api.npmjs.org/downloads/range/last-year/${pkgName}`
-          );
-          const data = (await response.json()) as PkgData;
-          return data;
-        })
-      );
+  // useEffect(() => {
+  //   if (!generatedPkgs || !isDone) return;
+  //   const fetchPkgDownloads = async () => {
+  //     if (!generatedPkgs || !isDone) return;
+  //     const pkgNames = generatedPkgs.split("\n").map((pkg) => {
+  //       const formattedPkg = pkg.replace(/[0-9]+. /, "").trim();
+  //       const [name, _] = formattedPkg.split(": ");
+  //       return name;
+  //     });
+  //     const pkgDownloads = Promise.all(
+  //       pkgNames.map(async (pkgName) => {
+  //         const response = await fetch(
+  //           `https://api.npmjs.org/downloads/range/last-year/${pkgName}`
+  //         );
+  //         const data = (await response.json()) as PkgData;
+  //         return data;
+  //       })
+  //     );
 
-      const pkgDownloadsData = await pkgDownloads;
-      const chartedData = pkgDownloadsData.map((pkg) => getChartData(pkg));
-      setChartData(chartedData);
-    };
-    isGraphView && fetchPkgDownloads();
-  }, [generatedPkgs, isDone, isGraphView]);
+  //     const pkgDownloadsData = await pkgDownloads;
+  //     const chartedData = pkgDownloadsData.map((pkg) => getChartData(pkg));
+  //     setChartData(chartedData);
+  //   };
+  //   isGraphView && fetchPkgDownloads();
+  // }, [generatedPkgs, isDone, isGraphView]);
 
   return (
     <>
@@ -118,42 +116,26 @@ export default function Home() {
                   Here are your packages
                 </h1>
                 <div className="grid w-full place-items-center gap-10">
-                  <div className="flex items-center gap-4">
-                    <Button
-                      aria-label="Search again"
-                      className="w-fit"
-                      onClick={() => {
-                        setGeneratedPkgs("");
-                        setIsGraphView(false);
-                      }}
-                      disabled={isLoading || !isDone}
-                    >
-                      Search again
-                    </Button>
-                    <Toggle
-                      enabled={isGraphView}
-                      setEnabled={setIsGraphView}
-                      disabled={isLoading || !isDone}
-                      enabledLabel="Graph view"
-                    />
+                  <Button
+                    aria-label="Search again"
+                    className="w-fit"
+                    onClick={() => {
+                      setGeneratedPkgs("");
+                      setIsGraphView(false);
+                    }}
+                    disabled={isLoading || !isDone}
+                  >
+                    Search again
+                  </Button>
+                  <div className="grid w-full max-w-2xl gap-2">
+                    {generatedPkgs.split("\n").map((pkg) => (
+                      <PackageCard
+                        key={crypto.randomUUID()}
+                        data={pkg}
+                        isDone={isDone}
+                      />
+                    ))}
                   </div>
-                  {isGraphView ? (
-                    <div className="w-full max-w-6xl overflow-x-auto">
-                      <div className="h-96 w-full min-w-[1024px]  ">
-                        <Chart data={chartData} />
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="grid w-full max-w-2xl gap-2">
-                      {generatedPkgs.split("\n").map((pkg) => (
-                        <PackageCard
-                          key={crypto.randomUUID()}
-                          data={pkg}
-                          isDone={isDone}
-                        />
-                      ))}
-                    </div>
-                  )}
                 </div>
               </Fragment>
             ) : (
