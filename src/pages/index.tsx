@@ -1,7 +1,9 @@
+import Chart from "@/components/Chart";
 import { Icons } from "@/components/Icons";
 import Button from "@/components/ui/Button";
 import ContentLoading from "@/components/ui/ContentLoading";
 import DropdownSelect from "@/components/ui/DropdownSelect";
+import Toggle from "@/components/ui/Toggle";
 import { useAppContext } from "@/contexts/AppProvider";
 import { ChartData, FRAMEWORK, PkgData, type Package } from "@/types/globals";
 import { getChartData } from "@/utils/npm";
@@ -28,6 +30,7 @@ export default function Home() {
   const [isDone, setIsDone] = useState<boolean>(false);
   const { generatedPkgs, setGeneratedPkgs } = useAppContext();
   const [chartData, setChartData] = useState<ChartData[]>([]);
+  const [showGraph, setShowGraph] = useState(false);
 
   // react-hook-form
   const { register, handleSubmit, formState, control, reset } = useForm<Inputs>(
@@ -74,27 +77,32 @@ export default function Home() {
     setIsLoading(false);
   };
 
-  const fetchPkgDownloads = async () => {
+  // toggle graph
+  useEffect(() => {
     if (!generatedPkgs || !isDone) return;
-    const pkgNames = generatedPkgs.split("\n").map((pkg) => {
-      const formattedPkg = pkg.replace(/[0-9]+. /, "").trim();
-      const [name, _] = formattedPkg.split(": ");
-      return name;
-    });
-    const pkgDownloads = Promise.all(
-      pkgNames.map(async (pkgName) => {
-        const response = await fetch(
-          `https://api.npmjs.org/downloads/range/last-year/${pkgName}`
-        );
-        const data = (await response.json()) as PkgData;
-        return data;
-      })
-    );
+    const fetchPkgDownloads = async () => {
+      if (!generatedPkgs || !isDone) return;
+      const pkgNames = generatedPkgs.split("\n").map((pkg) => {
+        const formattedPkg = pkg.replace(/[0-9]+. /, "").trim();
+        const [name, _] = formattedPkg.split(": ");
+        return name;
+      });
+      const pkgDownloads = Promise.all(
+        pkgNames.map(async (pkgName) => {
+          const response = await fetch(
+            `https://api.npmjs.org/downloads/range/last-year/${pkgName}`
+          );
+          const data = (await response.json()) as PkgData;
+          return data;
+        })
+      );
 
-    const pkgDownloadsData = await pkgDownloads;
-    const chartedData = pkgDownloadsData.map((pkg) => getChartData(pkg));
-    setChartData(chartedData);
-  };
+      const pkgDownloadsData = await pkgDownloads;
+      const chartedData = pkgDownloadsData.map((pkg) => getChartData(pkg));
+      setChartData(chartedData);
+    };
+    showGraph && fetchPkgDownloads();
+  }, [generatedPkgs, isDone, showGraph]);
 
   return (
     <>
@@ -109,8 +117,8 @@ export default function Home() {
                 <h1 className="max-w-2xl text-center text-3xl font-bold leading-tight text-gray-50 sm:text-5xl sm:leading-tight">
                   Here are your packages
                 </h1>
-                <div className="grid w-full max-w-2xl place-items-center gap-10">
-                  <div className="flex items-center gap-2.5">
+                <div className="grid w-full place-items-center gap-10">
+                  <div className="flex items-center gap-4">
                     <Button
                       aria-label="Search again"
                       className="w-fit"
@@ -121,29 +129,31 @@ export default function Home() {
                     >
                       Search again
                     </Button>
-                    <Button
-                      aria-label="Compare packages"
-                      className="w-fit"
-                      onClick={() => fetchPkgDownloads()}
+                    <Toggle
+                      enabled={showGraph}
+                      setEnabled={setShowGraph}
                       disabled={isLoading || !isDone}
-                    >
-                      Compare packages
-                    </Button>
+                      enabledLabel="Graph view"
+                    />
                   </div>
-                  <div className="grid w-full gap-2">
-                    {generatedPkgs.split("\n").map((pkg) => (
-                      <PackageCard
-                        key={crypto.randomUUID()}
-                        data={pkg}
-                        isDone={isDone}
-                      />
-                    ))}
-                  </div>
-                  {/* <div className="overflow-x-auto">
-                    <div className="mx-auto h-96 w-full min-w-[1024px] max-w-6xl ">
-                      <Chart data={chartData} />
+
+                  {showGraph ? (
+                    <div className="w-full max-w-6xl overflow-x-auto">
+                      <div className="h-96 w-full min-w-[1024px]  ">
+                        <Chart data={chartData} />
+                      </div>
                     </div>
-                  </div> */}
+                  ) : (
+                    <div className="grid w-full max-w-2xl gap-2">
+                      {generatedPkgs.split("\n").map((pkg) => (
+                        <PackageCard
+                          key={crypto.randomUUID()}
+                          data={pkg}
+                          isDone={isDone}
+                        />
+                      ))}
+                    </div>
+                  )}
                 </div>
               </Fragment>
             ) : (
