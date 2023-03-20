@@ -74,30 +74,27 @@ export default function Home() {
     setIsLoading(false);
   };
 
-  useEffect(() => {
+  const fetchPkgDownloads = async () => {
     if (!generatedPkgs || !isDone) return;
-    const fetchPkgDownloads = async () => {
-      const pkgNames = generatedPkgs.split("\n").map((pkg) => {
-        const formattedPkg = pkg.replace(/[0-9]+. /, "").trim();
-        const [name, _] = formattedPkg.split(": ");
-        return name;
-      });
-      const pkgDownloads = Promise.all(
-        pkgNames.map(async (pkgName) => {
-          const response = await fetch(
-            `https://api.npmjs.org/downloads/range/last-month/${pkgName}`
-          );
-          const data = (await response.json()) as PkgData;
-          return data;
-        })
-      );
+    const pkgNames = generatedPkgs.split("\n").map((pkg) => {
+      const formattedPkg = pkg.replace(/[0-9]+. /, "").trim();
+      const [name, _] = formattedPkg.split(": ");
+      return name;
+    });
+    const pkgDownloads = Promise.all(
+      pkgNames.map(async (pkgName) => {
+        const response = await fetch(
+          `https://api.npmjs.org/downloads/range/last-year/${pkgName}`
+        );
+        const data = (await response.json()) as PkgData;
+        return data;
+      })
+    );
 
-      const pkgDownloadsData = await pkgDownloads;
-      const chartedData = pkgDownloadsData.map((pkg) => getChartData(pkg));
-      console.log(chartedData);
-    };
-    fetchPkgDownloads();
-  }, [generatedPkgs, isDone]);
+    const pkgDownloadsData = await pkgDownloads;
+    const chartedData = pkgDownloadsData.map((pkg) => getChartData(pkg));
+    setChartData(chartedData);
+  };
 
   return (
     <>
@@ -127,9 +124,7 @@ export default function Home() {
                     <Button
                       aria-label="Compare packages"
                       className="w-fit"
-                      onClick={() => {
-                        setGeneratedPkgs("");
-                      }}
+                      onClick={() => fetchPkgDownloads()}
                       disabled={isLoading || !isDone}
                     >
                       Compare packages
@@ -144,6 +139,11 @@ export default function Home() {
                       />
                     ))}
                   </div>
+                  {/* <div className="overflow-x-auto">
+                    <div className="mx-auto h-96 w-full min-w-[1024px] max-w-6xl ">
+                      <Chart data={chartData} />
+                    </div>
+                  </div> */}
                 </div>
               </Fragment>
             ) : (

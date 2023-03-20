@@ -9,10 +9,18 @@ export const getChartData = (data: PkgData): ChartData => {
   };
 
   downloads.forEach((download: PkgDownload) => {
-    chartData.data.push({
-      x: dayjs(download.day).format("MMM DD"),
-      y: download.downloads,
-    });
+    const date = dayjs(download.day);
+    const month = date.format("MMM YYYY");
+    const index = chartData.data.findIndex((item) => item.x === month);
+
+    if (index === -1) {
+      chartData.data.push({
+        x: month,
+        y: download.downloads,
+      });
+    } else {
+      chartData.data[index].y += download.downloads;
+    }
   });
 
   return chartData;
