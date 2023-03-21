@@ -100,7 +100,10 @@ export default function Home() {
 
         const pkgDownloadsData = await pkgDownloads;
         const chartedData = pkgDownloadsData.map((pkg) => getChartData(pkg));
-        setChartData(chartedData);
+        const sortedChartData = chartedData.sort(
+          (a, b) => a.data[0].y - b.data[0].y
+        );
+        setChartData(sortedChartData);
       } catch (error) {
         error instanceof Error
           ? toast.error(error.message)
@@ -109,6 +112,8 @@ export default function Home() {
     };
     isChartView && fetchPkgDownloads();
   }, [generatedPkgs, isDone, isChartView]);
+
+  console.log(chartData);
 
   return (
     <>
@@ -145,7 +150,10 @@ export default function Home() {
                   </div>
                   {isChartView ? (
                     <div className="w-full max-w-7xl overflow-x-auto">
-                      <div className="h-[450px] w-full min-w-[1024px]  ">
+                      <p className="text-center text-lg font-medium text-gray-50 sm:text-2xl">
+                        Download counts for the last year
+                      </p>
+                      <div className="h-[480px] w-full min-w-[1024px]">
                         <Chart data={chartData} />
                       </div>
                     </div>
