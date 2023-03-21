@@ -51,7 +51,8 @@ const Chart = ({ data }: { data: ChartData[] }) => {
           <strong>{point.data.xFormatted}</strong>
           <br />
           <span style={{ color: point.serieColor }}>
-            {point.serieId}: {formatDownload(Number(point.data.yFormatted))}
+            <span className="capitalize">{point.serieId}</span>:{" "}
+            {formatDownload(Number(point.data.yFormatted))}
           </span>
         </div>
       )}
