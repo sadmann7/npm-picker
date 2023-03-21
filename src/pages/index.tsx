@@ -6,7 +6,7 @@ import DropdownSelect from "@/components/ui/DropdownSelect";
 import Toggle from "@/components/ui/Toggle";
 import { useAppContext } from "@/contexts/AppProvider";
 import { ChartData, FRAMEWORK, PkgData, type Package } from "@/types/globals";
-import { getChartData } from "@/utils/npm";
+import { getChartData } from "@/utils/format";
 import { zodResolver } from "@hookform/resolvers/zod";
 import dayjs from "dayjs";
 import { AnimatePresence } from "framer-motion";
@@ -116,7 +116,7 @@ export default function Home() {
         <title>npm Package Picker</title>
       </Head>
       <main className="w-full pt-40 pb-32">
-        <div className="container flex max-w-6xl flex-col items-center justify-center gap-10">
+        <div className="container flex max-w-7xl flex-col items-center justify-center gap-10">
           <AnimatePresence mode="wait">
             {generatedPkgs ? (
               <Fragment>
@@ -144,8 +144,8 @@ export default function Home() {
                     />
                   </div>
                   {isChartView ? (
-                    <div className="w-full max-w-6xl overflow-x-auto">
-                      <div className="h-96 w-full min-w-[1024px]  ">
+                    <div className="w-full max-w-7xl overflow-x-auto">
+                      <div className="h-[450px] w-full min-w-[1024px]  ">
                         <Chart data={chartData} />
                       </div>
                     </div>

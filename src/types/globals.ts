@@ -71,6 +71,7 @@ export type PkgDownload = {
 
 export type ChartData = {
   id: string;
+  color?: string;
   data: {
     x: string;
     y: number;

@@ -10,7 +10,7 @@ export const getChartData = (data: PkgData): ChartData => {
 
   downloads.forEach((download: PkgDownload) => {
     const date = dayjs(download.day);
-    const month = date.format("MMM YYYY");
+    const month = date.format("MMM, YY");
     const index = chartData.data.findIndex((item) => item.x === month);
 
     if (index === -1) {
@@ -24,4 +24,12 @@ export const getChartData = (data: PkgData): ChartData => {
   });
 
   return chartData;
+};
+
+export const formatDownload = (value: number): string => {
+  return value < 1000
+    ? value.toString()
+    : value < 1000000
+    ? `${(value / 1000).toFixed(0)}K`
+    : `${(value / 1000000).toFixed(0)}M`;
 };
