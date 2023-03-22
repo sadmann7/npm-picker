@@ -1,5 +1,5 @@
 import type { ChartDataNivo, PkgData, PkgDownload } from "@/types/globals";
-import { ChartData } from "chart.js";
+import type { ChartData } from "chart.js";
 import dayjs from "dayjs";
 
 export const getChartData = (data: PkgData[]): ChartData<"line"> => {
@@ -22,7 +22,7 @@ export const getChartData = (data: PkgData[]): ChartData<"line"> => {
     const { downloads } = item;
     downloads.forEach((download: PkgDownload) => {
       const date = dayjs(download.day);
-      const month = date.format("MMM, YY");
+      const month = date.format("MMMM");
       if (!acc.includes(month)) {
         acc.push(month);
       }
@@ -34,16 +34,15 @@ export const getChartData = (data: PkgData[]): ChartData<"line"> => {
     const { downloads } = item;
     const data = groupedLabels.map((label) => {
       const download = downloads.find(
-        (download: PkgDownload) =>
-          dayjs(download.day).format("MMM, YY") === label
+        (download: PkgDownload) => dayjs(download.day).format("MMMM") === label
       );
       return download ? download.downloads : 0;
     });
     return {
-      label: item.package,
+      label: toSentenceCase(item.package),
       data,
       ...colors[i],
-      yAxisID: "y",
+      tension: 0.3,
     };
   });
 
@@ -51,14 +50,6 @@ export const getChartData = (data: PkgData[]): ChartData<"line"> => {
     labels: groupedLabels,
     datasets,
   };
-};
-
-export const formatDownload = (value: number): string => {
-  return value < 1000
-    ? value.toString()
-    : value < 1000000
-    ? `${(value / 1000).toFixed(0)}K`
-    : `${(value / 1000000).toFixed(0)}M`;
 };
 
 export const getNivoChartData = (data: PkgData): ChartDataNivo => {
@@ -84,4 +75,19 @@ export const getNivoChartData = (data: PkgData): ChartDataNivo => {
   });
 
   return chartData;
+};
+
+export const formatDownload = (value: number): string => {
+  return value < 1000
+    ? value.toString()
+    : value < 1000000
+    ? `${(value / 1000).toFixed(0)}K`
+    : `${(value / 1000000).toFixed(0)}M`;
+};
+
+export const toSentenceCase = (str: string): string => {
+  return str
+    .split("-")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join("-");
 };

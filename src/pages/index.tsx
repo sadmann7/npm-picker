@@ -5,10 +5,11 @@ import ContentLoading from "@/components/ui/ContentLoading";
 import DropdownSelect from "@/components/ui/DropdownSelect";
 import Toggle from "@/components/ui/Toggle";
 import { useAppContext } from "@/contexts/AppProvider";
-import { FRAMEWORK, PkgData, type Package } from "@/types/globals";
+import useWindowSize from "@/hooks/useWindowSize";
+import { FRAMEWORK, type Package, type PkgData } from "@/types/globals";
 import { getChartData } from "@/utils/format";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ChartData } from "chart.js";
+import type { ChartData } from "chart.js";
 import dayjs from "dayjs";
 import { AnimatePresence } from "framer-motion";
 import { Calendar, Download, File, Loader2 } from "lucide-react";
@@ -36,6 +37,7 @@ export default function Home() {
     labels: [],
     datasets: [],
   });
+  const size = useWindowSize();
 
   // react-hook-form
   const { register, handleSubmit, formState, control, reset } = useForm<Inputs>(
@@ -105,6 +107,7 @@ export default function Home() {
         );
 
         const pkgDownloadsData = await pkgDownloads;
+        if (!pkgDownloadsData) return;
         const chartedData = getChartData(pkgDownloadsData);
         setChartData(chartedData);
         setIsLoadingChartData(false);
@@ -132,7 +135,7 @@ export default function Home() {
                   Here are your packages
                 </h1>
                 <div className="grid w-full place-items-center gap-10">
-                  <div className="flex items-center gap-5">
+                  <div className="grid place-items-center gap-5">
                     <Button
                       aria-label="Search again"
                       className="w-fit"
@@ -147,20 +150,37 @@ export default function Home() {
                     <Toggle
                       enabled={isChartView}
                       setEnabled={setIsChartView}
-                      enabledLabel="Compare"
+                      enabledLabel="Chart view"
+                      disabledLabel="List view"
                       disabled={isLoading || !isDone}
                     />
                   </div>
                   {isChartView ? (
-                    <div className="w-full max-w-7xl overflow-x-auto">
-                      {isLoadingChartData ? (
-                        <div className="flex h-96 w-full items-center justify-center">
-                          <Loader2 className="mr-2 h-24 w-24 animate-spin stroke-1" />
+                    isLoadingChartData ? (
+                      <div
+                        aria-label="Loading chart"
+                        className="flex h-96 w-full items-center justify-center"
+                      >
+                        <Loader2
+                          className="mr-2 h-24 w-24 animate-spin stroke-1"
+                          aria-hidden="true"
+                        />
+                      </div>
+                    ) : (
+                      <div className="grid w-full max-w-6xl gap-5">
+                        <h2 className="text-center text-xl font-bold leading-tight text-gray-100 sm:text-3xl sm:leading-tight">
+                          Downloads count over the last year
+                        </h2>
+                        <div className="w-full overflow-x-auto">
+                          <div className="w-full min-w-[480px]">
+                            <LineChart
+                              data={chartData}
+                              windowWidth={size.width}
+                            />
+                          </div>
                         </div>
-                      ) : (
-                        <LineChart data={chartData} />
-                      )}
-                    </div>
+                      </div>
+                    )
                   ) : (
                     <div className="grid w-full max-w-2xl gap-2">
                       {generatedPkgs.split("\n").map((pkg) => (

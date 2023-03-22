@@ -39,8 +39,8 @@ const Toggle = ({
           checked={enabled}
           onChange={setEnabled}
           className={twMerge(
-            "relative inline-flex h-8 w-16 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75",
-            enabled ? "bg-blue-700" : "bg-blue-600",
+            "relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75",
+            enabled ? "bg-blue-700" : "bg-blue-500",
             disabled && "pointer-events-none opacity-50"
           )}
           disabled={disabled}
@@ -49,8 +49,8 @@ const Toggle = ({
           <span
             aria-hidden="true"
             className={twMerge(
-              "pointer-events-none inline-block h-7 w-7 transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out",
-              enabled ? "translate-x-9" : "translate-x-0"
+              "pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out",
+              enabled ? "translate-x-5" : "translate-x-0"
             )}
           />
         </Switch>
