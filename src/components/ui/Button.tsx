@@ -39,7 +39,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       >
         {isLoading ? (
           loadingVariant === "spinner" ? (
-            <Loader2 className="mr-2 aspect-square w-4 animate-spin" />
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
           ) : (
             <div className="flex items-center gap-1">
               <div className="h-2 w-2 animate-bounce rounded-full bg-gray-50"></div>

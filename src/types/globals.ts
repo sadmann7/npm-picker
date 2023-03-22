@@ -69,7 +69,7 @@ export type PkgDownload = {
   day: string;
 };
 
-export type ChartData = {
+export type ChartDataNivo = {
   id: string;
   color?: string;
   data: {

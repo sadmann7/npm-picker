@@ -1,16 +1,17 @@
-import Chart from "@/components/Chart";
 import { Icons } from "@/components/Icons";
+import LineChart from "@/components/LineChart";
 import Button from "@/components/ui/Button";
 import ContentLoading from "@/components/ui/ContentLoading";
 import DropdownSelect from "@/components/ui/DropdownSelect";
 import Toggle from "@/components/ui/Toggle";
 import { useAppContext } from "@/contexts/AppProvider";
-import { ChartData, FRAMEWORK, PkgData, type Package } from "@/types/globals";
+import { FRAMEWORK, PkgData, type Package } from "@/types/globals";
 import { getChartData } from "@/utils/format";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { ChartData } from "chart.js";
 import dayjs from "dayjs";
 import { AnimatePresence } from "framer-motion";
-import { Calendar, Download, File } from "lucide-react";
+import { Calendar, Download, File, Loader2 } from "lucide-react";
 import Head from "next/head";
 import { Fragment, useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -30,7 +31,11 @@ export default function Home() {
   const [isDone, setIsDone] = useState<boolean>(false);
   const { generatedPkgs, setGeneratedPkgs, isChartView, setIsChartView } =
     useAppContext();
-  const [chartData, setChartData] = useState<ChartData[]>([]);
+  const [isLoadingChartData, setIsLoadingChartData] = useState(false);
+  const [chartData, setChartData] = useState<ChartData<"line">>({
+    labels: [],
+    datasets: [],
+  });
 
   // react-hook-form
   const { register, handleSubmit, formState, control, reset } = useForm<Inputs>(
@@ -80,6 +85,7 @@ export default function Home() {
   // toggle views
   useEffect(() => {
     if (!generatedPkgs || !isDone) return;
+    setIsLoadingChartData(true);
     const fetchPkgDownloads = async () => {
       try {
         if (!generatedPkgs || !isDone) return;
@@ -99,21 +105,18 @@ export default function Home() {
         );
 
         const pkgDownloadsData = await pkgDownloads;
-        const chartedData = pkgDownloadsData.map((pkg) => getChartData(pkg));
-        const sortedChartData = chartedData.sort(
-          (a, b) => a.data[0].y - b.data[0].y
-        );
-        setChartData(sortedChartData);
+        const chartedData = getChartData(pkgDownloadsData);
+        setChartData(chartedData);
+        setIsLoadingChartData(false);
       } catch (error) {
         error instanceof Error
           ? toast.error(error.message)
           : toast.error("Something went wrong");
+        setIsLoadingChartData(false);
       }
     };
     isChartView && fetchPkgDownloads();
   }, [generatedPkgs, isDone, isChartView]);
-
-  console.log(chartData);
 
   return (
     <>
@@ -150,12 +153,13 @@ export default function Home() {
                   </div>
                   {isChartView ? (
                     <div className="w-full max-w-7xl overflow-x-auto">
-                      <p className="text-center text-lg font-medium text-gray-50 sm:text-2xl">
-                        Download counts for the last year
-                      </p>
-                      <div className="h-[480px] w-full min-w-[1024px]">
-                        <Chart data={chartData} />
-                      </div>
+                      {isLoadingChartData ? (
+                        <div className="flex h-96 w-full items-center justify-center">
+                          <Loader2 className="mr-2 h-24 w-24 animate-spin stroke-1" />
+                        </div>
+                      ) : (
+                        <LineChart data={chartData} />
+                      )}
                     </div>
                   ) : (
                     <div className="grid w-full max-w-2xl gap-2">
