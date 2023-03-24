@@ -2,11 +2,17 @@ import { Icons } from "@/components/Icons";
 import LineChart from "@/components/LineChart";
 import Button from "@/components/ui/Button";
 import ContentLoading from "@/components/ui/ContentLoading";
+import Dropdown from "@/components/ui/Dropdown";
 import DropdownSelect from "@/components/ui/DropdownSelect";
 import Toggle from "@/components/ui/Toggle";
 import { useAppContext } from "@/contexts/AppProvider";
 import useWindowSize from "@/hooks/useWindowSize";
-import { FRAMEWORK, type Package, type PkgData } from "@/types/globals";
+import {
+  DURATION,
+  FRAMEWORK,
+  type Package,
+  type PkgData,
+} from "@/types/globals";
 import { getChartData } from "@/utils/format";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { ChartData } from "chart.js";
@@ -27,6 +33,7 @@ type Inputs = z.infer<typeof schema>;
 
 export default function Home() {
   const frameworks = Object.values(FRAMEWORK);
+  const durations = Object.values(DURATION);
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isDone, setIsDone] = useState<boolean>(false);
@@ -37,6 +44,9 @@ export default function Home() {
     labels: [],
     datasets: [],
   });
+  const [selectedDuration, setSelectedDuration] = useState<DURATION>(
+    DURATION.LAST_YEAR
+  );
   const size = useWindowSize();
 
   // react-hook-form
@@ -134,7 +144,7 @@ export default function Home() {
                 <h1 className="max-w-2xl text-center text-3xl font-bold leading-tight text-gray-50 sm:text-5xl sm:leading-tight">
                   Here are your packages
                 </h1>
-                <div className="grid w-full place-items-center gap-10">
+                <div className="grid w-full place-items-center gap-8">
                   <div className="grid place-items-center gap-5">
                     <Button
                       aria-label="Search again"
@@ -167,10 +177,13 @@ export default function Home() {
                         />
                       </div>
                     ) : (
-                      <div className="grid w-full max-w-6xl gap-5">
-                        <h2 className="text-center text-xl font-bold leading-tight text-gray-100 sm:text-3xl sm:leading-tight">
-                          Downloads count over the last year
-                        </h2>
+                      <div className="grid w-full max-w-6xl place-items-center gap-5">
+                        <Dropdown
+                          selected={selectedDuration}
+                          setSelected={setSelectedDuration}
+                          options={durations}
+                          className="w-full max-w-xs"
+                        />
                         <div className="w-full overflow-x-auto">
                           <div className="w-full min-w-[480px]">
                             <LineChart

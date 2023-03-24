@@ -1,5 +1,6 @@
 import type { NextApiRequest } from "next";
 import type { NextRequest } from "next/server";
+import type { Dispatch, SetStateAction } from "react";
 
 export type OpenAIStreamPayload = {
   model: ChatGPTModel;
@@ -77,3 +78,12 @@ export type ChartDataNivo = {
     y: number;
   }[];
 };
+
+export enum DURATION {
+  LAST_DAY = "last-day",
+  LAST_WEEK = "last-week",
+  LAST_MONTH = "last-month",
+  LAST_YEAR = "last-year",
+}
+
+export type SetState<T> = Dispatch<SetStateAction<T>>;
