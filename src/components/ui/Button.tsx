@@ -1,3 +1,4 @@
+import LoadingDots from "@/components/ui/LoadingDots";
 import { Loader2 } from "lucide-react";
 import type { ButtonHTMLAttributes, DetailedHTMLProps } from "react";
 import { forwardRef } from "react";
@@ -25,6 +26,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ) => {
     return (
       <button
+        ref={ref}
         className={twMerge(
           "flex h-10 w-full items-center justify-center rounded-md border border-transparent px-4 py-2 text-base font-medium shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 active:scale-[0.99] disabled:pointer-events-none disabled:opacity-70 dark:focus:ring-gray-400 dark:focus:ring-offset-gray-800",
           variant === "primary" && "bg-blue-600 text-white hover:bg-blue-700",
@@ -34,7 +36,6 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             "bg-transparent hover:bg-gray-100 dark:text-gray-100 dark:hover:bg-gray-800 dark:hover:text-gray-100",
           className
         )}
-        ref={ref}
         {...props}
       >
         {isLoading ? (
@@ -44,11 +45,10 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
               <span>Loading...</span>
             </div>
           ) : (
-            <div className="flex items-center gap-1">
-              <div className="h-2 w-2 animate-bounce rounded-full bg-gray-50"></div>
-              <div className="h-2 w-2 animate-bounce rounded-full bg-gray-50"></div>
-              <div className="h-2 w-2 animate-bounce rounded-full bg-gray-50"></div>
-            </div>
+            <LoadingDots
+              color={variant === "primary" ? "#f9fafb" : "#111827"}
+              size="large"
+            />
           )
         ) : (
           props.children

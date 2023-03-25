@@ -47,7 +47,10 @@ const Dropdown = <T extends string>({
             {options.map((option) => (
               <Listbox.Option
                 key={option}
-                className="relative cursor-pointer select-none px-4 py-2 font-medium text-gray-900 transition hover:bg-gray-300 ui-selected:bg-gray-400/70 hover:ui-selected:bg-gray-400/80"
+                className={twMerge(
+                  "relative cursor-pointer select-none px-4 py-2 font-medium text-gray-800 transition",
+                  "ui-selected:bg-gray-300/70 ui-active:bg-gray-300 hover:ui-active:bg-gray-300/50"
+                )}
                 value={option}
               >
                 {({ selected }) => (
@@ -56,7 +59,7 @@ const Dropdown = <T extends string>({
                       {toTitleCase(option)}
                     </span>
                     {selected ? (
-                      <span className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-900">
+                      <span className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-800">
                         <Check className="h-5 w-5" aria-hidden="true" />
                       </span>
                     ) : null}

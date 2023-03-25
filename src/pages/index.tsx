@@ -7,20 +7,16 @@ import DropdownSelect from "@/components/ui/DropdownSelect";
 import Toggle from "@/components/ui/Toggle";
 import { useAppContext } from "@/contexts/AppProvider";
 import useWindowSize from "@/hooks/useWindowSize";
-import {
-  DURATION,
-  FRAMEWORK,
-  type Package,
-  type PkgData,
-} from "@/types/globals";
+import type { Package, PkgData } from "@/types/globals";
+import { DURATION, FRAMEWORK } from "@/types/globals";
 import { getChartData } from "@/utils/format";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { ChartData } from "chart.js";
 import dayjs from "dayjs";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { Calendar, Download, File, Loader2 } from "lucide-react";
 import Head from "next/head";
-import { Fragment, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { z } from "zod";
@@ -44,9 +40,7 @@ export default function Home() {
     labels: [],
     datasets: [],
   });
-  const [selectedDuration, setSelectedDuration] = useState<DURATION>(
-    DURATION.LAST_YEAR
-  );
+  const [duration, setDuration] = useState<DURATION>(DURATION.LAST_YEAR);
   const size = useWindowSize();
 
   // react-hook-form
@@ -109,7 +103,7 @@ export default function Home() {
         const pkgDownloads = Promise.all(
           pkgNames.map(async (pkgName) => {
             const response = await fetch(
-              `https://api.npmjs.org/downloads/range/last-year/${pkgName}`
+              `https://api.npmjs.org/downloads/range/${duration}/${pkgName}`
             );
             const data = (await response.json()) as PkgData;
             return data;
@@ -118,7 +112,7 @@ export default function Home() {
 
         const pkgDownloadsData = await pkgDownloads;
         if (!pkgDownloadsData) return;
-        const chartedData = getChartData(pkgDownloadsData);
+        const chartedData = getChartData(pkgDownloadsData, duration);
         setChartData(chartedData);
         setIsLoadingChartData(false);
       } catch (error) {
@@ -129,18 +123,24 @@ export default function Home() {
       }
     };
     isChartView && fetchPkgDownloads();
-  }, [generatedPkgs, isDone, isChartView]);
+  }, [generatedPkgs, isDone, isChartView, duration]);
 
   return (
     <>
       <Head>
         <title>npm Package Picker</title>
       </Head>
-      <main className="w-full pt-40 pb-32">
-        <div className="container flex max-w-7xl flex-col items-center justify-center gap-10">
+      <main className="w-full pt-32 pb-32">
+        <div className="container w-full max-w-7xl">
           <AnimatePresence mode="wait">
             {generatedPkgs ? (
-              <Fragment>
+              <motion.div
+                className="grid place-items-center gap-8"
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 20 }}
+                transition={{ duration: 0.3 }}
+              >
                 <h1 className="max-w-2xl text-center text-3xl font-bold leading-tight text-gray-50 sm:text-5xl sm:leading-tight">
                   Here are your packages
                 </h1>
@@ -177,25 +177,42 @@ export default function Home() {
                         />
                       </div>
                     ) : (
-                      <div className="grid w-full max-w-6xl place-items-center gap-5">
-                        <Dropdown
-                          selected={selectedDuration}
-                          setSelected={setSelectedDuration}
-                          options={durations}
-                          className="w-full max-w-xs"
-                        />
-                        <div className="w-full overflow-x-auto">
-                          <div className="w-full min-w-[480px]">
-                            <LineChart
-                              data={chartData}
-                              windowWidth={size.width}
-                            />
+                      <AnimatePresence mode="wait">
+                        <motion.div
+                          className="grid w-full max-w-6xl place-items-center gap-5"
+                          initial={{ opacity: 0, y: -20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: 20 }}
+                          transition={{ duration: 0.3 }}
+                        >
+                          <h2 className="text-2xl font-bold leading-tight text-gray-50 sm:text-3xl sm:leading-tight">
+                            Downloads chart
+                          </h2>
+                          <Dropdown
+                            selected={duration}
+                            setSelected={setDuration}
+                            options={durations}
+                            className="w-full xs:max-w-xs"
+                          />
+                          <div className="w-full overflow-x-auto">
+                            <div className="w-full min-w-[480px]">
+                              <LineChart
+                                data={chartData}
+                                windowWidth={size.width}
+                              />
+                            </div>
                           </div>
-                        </div>
-                      </div>
+                        </motion.div>
+                      </AnimatePresence>
                     )
                   ) : (
-                    <div className="grid w-full max-w-2xl gap-2">
+                    <motion.div
+                      className="grid w-full max-w-2xl gap-2"
+                      initial={{ opacity: 0, y: -20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 20 }}
+                      transition={{ duration: 0.3 }}
+                    >
                       {generatedPkgs.split("\n").map((pkg) => (
                         <PackageCard
                           key={crypto.randomUUID()}
@@ -203,12 +220,12 @@ export default function Home() {
                           isDone={isDone}
                         />
                       ))}
-                    </div>
+                    </motion.div>
                   )}
                 </div>
-              </Fragment>
+              </motion.div>
             ) : (
-              <Fragment>
+              <div className="grid place-items-center gap-8">
                 <h1 className="max-w-2xl text-center text-3xl font-bold leading-tight text-gray-50 sm:text-5xl sm:leading-tight">
                   Find the best{" "}
                   <span className="text-blue-500">npm packages</span> for your
@@ -277,13 +294,13 @@ export default function Home() {
                     aria-label="Find packages"
                     className="w-full"
                     isLoading={isLoading}
-                    loadingVariant="spinner"
+                    loadingVariant="dots"
                     disabled={isLoading}
                   >
                     Find packages
                   </Button>
                 </form>
-              </Fragment>
+              </div>
             )}
           </AnimatePresence>
         </div>
@@ -329,7 +346,7 @@ const PackageCard = ({ data, isDone }: { data: string; isDone: boolean }) => {
   }, [name, isDone]);
 
   return (
-    <div className="grid w-full gap-1 rounded-md bg-gray-600/60 px-6 pt-3 pb-5 shadow-md backdrop-blur-sm backdrop-filter">
+    <div className="grid w-full gap-1.5 rounded-md bg-gray-600/70 px-5 pt-2.5 pb-4 shadow-lg backdrop-blur-sm backdrop-filter">
       <div className="flex flex-col justify-between gap-2 xxs:flex-row sm:items-center">
         <h2 className="text-lg font-bold capitalize text-gray-50 sm:text-xl">
           {name}

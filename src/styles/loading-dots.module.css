@@ -1,0 +1,69 @@
+.small {
+  display: inline-flex;
+  align-items: center;
+}
+
+.small .spacer {
+  margin-right: 2px;
+}
+
+.small span {
+  animation-name: blink;
+  animation-duration: 1.4s;
+  animation-iteration-count: infinite;
+  animation-fill-mode: both;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  display: inline-block;
+  margin: 0 1px;
+}
+
+.small span:nth-of-type(2) {
+  animation-delay: 0.2s;
+}
+
+.small span:nth-of-type(3) {
+  animation-delay: 0.4s;
+}
+
+.large {
+  display: inline-flex;
+  align-items: center;
+}
+
+.large .spacer {
+  margin-right: 2px;
+}
+
+.large span {
+  animation-name: blink;
+  animation-duration: 1.4s;
+  animation-iteration-count: infinite;
+  animation-fill-mode: both;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  margin: 0 1px;
+}
+
+.large span:nth-of-type(2) {
+  animation-delay: 0.2s;
+}
+
+.large span:nth-of-type(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes blink {
+  0% {
+    opacity: 0.2;
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.2;
+  }
+}

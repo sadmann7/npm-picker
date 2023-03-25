@@ -1,8 +1,12 @@
 import type { ChartDataNivo, PkgData, PkgDownload } from "@/types/globals";
+import { DURATION } from "@/types/globals";
 import type { ChartData } from "chart.js";
 import dayjs from "dayjs";
 
-export const getChartData = (data: PkgData[]): ChartData<"line"> => {
+export const getChartData = (
+  data: PkgData[],
+  duration: DURATION
+): ChartData<"line"> => {
   const colors = [
     {
       backgroundColor: "hsla(9, 87%, 67%, 0.2)",
@@ -20,9 +24,16 @@ export const getChartData = (data: PkgData[]): ChartData<"line"> => {
 
   const groupedLabels = data.reduce((acc, item) => {
     const { downloads } = item;
+
     downloads.forEach((download: PkgDownload) => {
       const date = dayjs(download.day);
-      const month = date.format("MMMM");
+      const month = date.format(
+        duration === DURATION.LAST_WEEK
+          ? "dddd"
+          : duration === DURATION.LAST_MONTH
+          ? "MMM DD"
+          : "MMMM"
+      );
       if (!acc.includes(month)) {
         acc.push(month);
       }
@@ -33,10 +44,17 @@ export const getChartData = (data: PkgData[]): ChartData<"line"> => {
   const datasets = data.map((item, i) => {
     const { downloads } = item;
     const data = groupedLabels.map((label) => {
-      const download = downloads.find(
-        (download: PkgDownload) => dayjs(download.day).format("MMMM") === label
+      const pkgDownload = downloads.find(
+        (download: PkgDownload) =>
+          dayjs(download.day).format(
+            duration === DURATION.LAST_WEEK
+              ? "dddd"
+              : duration === DURATION.LAST_MONTH
+              ? "MMM DD"
+              : "MMMM"
+          ) === label
       );
-      return download ? download.downloads : 0;
+      return pkgDownload ? pkgDownload.downloads : 0;
     });
     return {
       label: toSentenceCase(item.package),
