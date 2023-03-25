@@ -165,19 +165,19 @@ export default function Home() {
                       disabled={isLoading || !isDone}
                     />
                   </div>
-                  {isChartView ? (
-                    isLoadingChartData ? (
-                      <div
-                        aria-label="Loading chart"
-                        className="flex h-96 w-full items-center justify-center"
-                      >
-                        <Loader2
-                          className="mr-2 h-24 w-24 animate-spin stroke-1"
-                          aria-hidden="true"
-                        />
-                      </div>
-                    ) : (
-                      <AnimatePresence mode="wait">
+                  <AnimatePresence mode="wait">
+                    {isChartView ? (
+                      isLoadingChartData ? (
+                        <div
+                          aria-label="Loading chart"
+                          className="flex h-96 w-full items-center justify-center"
+                        >
+                          <Loader2
+                            className="mr-2 h-24 w-24 animate-spin stroke-1"
+                            aria-hidden="true"
+                          />
+                        </div>
+                      ) : (
                         <motion.div
                           className="grid w-full max-w-6xl place-items-center gap-5"
                           initial={{ opacity: 0, y: -20 }}
@@ -203,29 +203,37 @@ export default function Home() {
                             </div>
                           </div>
                         </motion.div>
+                      )
+                    ) : (
+                      <AnimatePresence mode="wait">
+                        <motion.div
+                          className="grid w-full max-w-2xl gap-2"
+                          initial={{ opacity: 0, y: -20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: 20 }}
+                          transition={{ duration: 0.3 }}
+                        >
+                          {generatedPkgs.split("\n").map((pkg) => (
+                            <PackageCard
+                              key={crypto.randomUUID()}
+                              data={pkg}
+                              isDone={isDone}
+                            />
+                          ))}
+                        </motion.div>
                       </AnimatePresence>
-                    )
-                  ) : (
-                    <motion.div
-                      className="grid w-full max-w-2xl gap-2"
-                      initial={{ opacity: 0, y: -20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 20 }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      {generatedPkgs.split("\n").map((pkg) => (
-                        <PackageCard
-                          key={crypto.randomUUID()}
-                          data={pkg}
-                          isDone={isDone}
-                        />
-                      ))}
-                    </motion.div>
-                  )}
+                    )}
+                  </AnimatePresence>
                 </div>
               </motion.div>
             ) : (
-              <div className="grid place-items-center gap-8">
+              <motion.div
+                className="grid place-items-center gap-8"
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 20 }}
+                transition={{ duration: 0.3 }}
+              >
                 <h1 className="max-w-2xl text-center text-3xl font-bold leading-tight text-gray-50 sm:text-5xl sm:leading-tight">
                   Find the best{" "}
                   <span className="text-blue-500">npm packages</span> for your
@@ -300,7 +308,7 @@ export default function Home() {
                     Find packages
                   </Button>
                 </form>
-              </div>
+              </motion.div>
             )}
           </AnimatePresence>
         </div>
