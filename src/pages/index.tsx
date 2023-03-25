@@ -132,185 +132,171 @@ export default function Home() {
       </Head>
       <main className="w-full pt-32 pb-32">
         <div className="container w-full max-w-7xl">
-          <AnimatePresence mode="wait">
-            {generatedPkgs ? (
-              <motion.div
-                className="grid place-items-center gap-8"
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 20 }}
-                transition={{ duration: 0.3 }}
-              >
-                <h1 className="max-w-2xl text-center text-3xl font-bold leading-tight text-gray-50 sm:text-5xl sm:leading-tight">
-                  Here are your packages
-                </h1>
-                <div className="grid w-full place-items-center gap-8">
-                  <div className="grid place-items-center gap-5">
-                    <Button
-                      aria-label="Search again"
-                      className="w-fit"
-                      onClick={() => {
-                        setGeneratedPkgs("");
-                        setIsChartView(false);
-                      }}
-                      disabled={isLoading || !isDone}
-                    >
-                      Search again
-                    </Button>
-                    <Toggle
-                      enabled={isChartView}
-                      setEnabled={setIsChartView}
-                      enabledLabel="Chart view"
-                      disabledLabel="List view"
-                      disabled={isLoading || !isDone}
-                    />
-                  </div>
-                  <AnimatePresence mode="wait">
-                    {isChartView ? (
-                      isLoadingChartData ? (
-                        <div
-                          aria-label="Loading chart"
-                          className="flex h-96 w-full items-center justify-center"
-                        >
-                          <Loader2
-                            className="mr-2 h-24 w-24 animate-spin stroke-1"
-                            aria-hidden="true"
-                          />
-                        </div>
-                      ) : (
-                        <motion.div
-                          className="grid w-full max-w-6xl place-items-center gap-5"
-                          initial={{ opacity: 0, y: -20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: 20 }}
-                          transition={{ duration: 0.3 }}
-                        >
-                          <h2 className="text-2xl font-bold leading-tight text-gray-50 sm:text-3xl sm:leading-tight">
-                            Downloads chart
-                          </h2>
-                          <Dropdown
-                            selected={duration}
-                            setSelected={setDuration}
-                            options={durations}
-                            className="w-full xs:max-w-xs"
-                          />
-                          <div className="w-full overflow-x-auto">
-                            <div className="w-full min-w-[480px]">
-                              <LineChart
-                                data={chartData}
-                                windowWidth={size.width}
-                              />
-                            </div>
-                          </div>
-                        </motion.div>
-                      )
-                    ) : (
-                      <AnimatePresence mode="wait">
-                        <motion.div
-                          className="grid w-full max-w-2xl gap-2"
-                          initial={{ opacity: 0, y: -20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: 20 }}
-                          transition={{ duration: 0.3 }}
-                        >
-                          {generatedPkgs.split("\n").map((pkg) => (
-                            <PackageCard
-                              key={crypto.randomUUID()}
-                              data={pkg}
-                              isDone={isDone}
-                            />
-                          ))}
-                        </motion.div>
-                      </AnimatePresence>
-                    )}
-                  </AnimatePresence>
-                </div>
-              </motion.div>
-            ) : (
-              <motion.div
-                className="grid place-items-center gap-8"
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 20 }}
-                transition={{ duration: 0.3 }}
-              >
-                <h1 className="max-w-2xl text-center text-3xl font-bold leading-tight text-gray-50 sm:text-5xl sm:leading-tight">
-                  Find the best{" "}
-                  <span className="text-blue-500">npm packages</span> for your
-                  project
-                </h1>
-                <form
-                  aria-label="form for finding NPM packages"
-                  className="grid w-full max-w-xl gap-7"
-                  onSubmit={(...args) => void handleSubmit(onSubmit)(...args)}
-                >
-                  <fieldset className="grid gap-5">
-                    <label
-                      htmlFor="requirement"
-                      className="flex items-center gap-2.5 text-sm font-medium sm:text-base"
-                    >
-                      <span className="grid h-7 w-7 place-items-center rounded-full bg-gray-500 text-xs font-bold text-white sm:text-sm">
-                        1
-                      </span>
-                      <span className="flex-1 text-gray-50">
-                        Enter your requirement
-                      </span>
-                    </label>
-                    <textarea
-                      id="requirement"
-                      rows={2}
-                      className="w-full rounded-md border-gray-400 bg-transparent px-4 pt-2.5 text-base text-gray-50 transition-colors placeholder:text-gray-400 focus:border-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-offset-2 focus:ring-offset-gray-800"
-                      placeholder="e.g. Time"
-                      {...register("requirement")}
-                      onKeyDown={(e) => {
-                        if (!formState.isValid || isLoading) return;
-                        if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
-                          handleSubmit(onSubmit)();
-                        }
-                      }}
-                    />
-                    {formState.errors.requirement ? (
-                      <p className="-mt-1.5 text-sm font-medium text-red-500">
-                        {formState.errors.requirement.message}
-                      </p>
-                    ) : null}
-                  </fieldset>
-                  <fieldset className="grid gap-5">
-                    <label
-                      htmlFor="framework"
-                      className="flex items-center gap-2.5 text-sm font-medium  sm:text-base"
-                    >
-                      <span className="grid h-7 w-7 place-items-center rounded-full bg-gray-500 text-xs font-bold text-white sm:text-sm">
-                        2
-                      </span>
-                      <span className="flex-1 text-gray-50">
-                        Select your framework
-                      </span>
-                    </label>
-                    <DropdownSelect
-                      control={control}
-                      name="framework"
-                      options={frameworks}
-                    />
-                    {formState.errors.framework ? (
-                      <p className="-mt-1.5 text-sm font-medium text-red-500">
-                        {formState.errors.framework.message}
-                      </p>
-                    ) : null}
-                  </fieldset>
+          {generatedPkgs ? (
+            <div className="grid place-items-center gap-8">
+              <h1 className="max-w-2xl text-center text-3xl font-bold leading-tight text-gray-50 sm:text-5xl sm:leading-tight">
+                Here are your packages
+              </h1>
+              <div className="grid w-full place-items-center gap-8">
+                <div className="grid place-items-center gap-5">
                   <Button
-                    aria-label="Find packages"
-                    className="w-full"
-                    isLoading={isLoading}
-                    loadingVariant="dots"
-                    disabled={isLoading}
+                    aria-label="Search again"
+                    className="w-fit"
+                    onClick={() => {
+                      setGeneratedPkgs("");
+                      setIsChartView(false);
+                    }}
+                    disabled={isLoading || !isDone}
                   >
-                    Find packages
+                    Search again
                   </Button>
-                </form>
-              </motion.div>
-            )}
-          </AnimatePresence>
+                  <Toggle
+                    enabled={isChartView}
+                    setEnabled={setIsChartView}
+                    enabledLabel="Chart view"
+                    disabledLabel="List view"
+                    disabled={isLoading || !isDone}
+                  />
+                </div>
+                <AnimatePresence mode="wait">
+                  {isChartView ? (
+                    isLoadingChartData ? (
+                      <div
+                        aria-label="Loading chart"
+                        className="flex h-96 w-full items-center justify-center"
+                      >
+                        <Loader2
+                          className="mr-2 h-24 w-24 animate-spin stroke-1"
+                          aria-hidden="true"
+                        />
+                      </div>
+                    ) : (
+                      <motion.div
+                        className="grid w-full max-w-6xl place-items-center gap-5"
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 20 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        <h2 className="text-2xl font-bold leading-tight text-gray-50 sm:text-3xl sm:leading-tight">
+                          Downloads chart
+                        </h2>
+                        <Dropdown
+                          selected={duration}
+                          setSelected={setDuration}
+                          options={durations}
+                          className="w-full xs:max-w-xs"
+                        />
+                        <div className="w-full overflow-x-auto">
+                          <div className="w-full min-w-[480px]">
+                            <LineChart
+                              data={chartData}
+                              windowWidth={size.width}
+                            />
+                          </div>
+                        </div>
+                      </motion.div>
+                    )
+                  ) : (
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        className="grid w-full max-w-2xl gap-2"
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 20 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        {generatedPkgs.split("\n").map((pkg) => (
+                          <PackageCard
+                            key={crypto.randomUUID()}
+                            data={pkg}
+                            isDone={isDone}
+                          />
+                        ))}
+                      </motion.div>
+                    </AnimatePresence>
+                  )}
+                </AnimatePresence>
+              </div>
+            </div>
+          ) : (
+            <div className="grid place-items-center gap-8">
+              <h1 className="max-w-2xl text-center text-3xl font-bold leading-tight text-gray-50 sm:text-5xl sm:leading-tight">
+                Find the best{" "}
+                <span className="text-blue-500">npm packages</span> for your
+                project
+              </h1>
+              <form
+                aria-label="form for finding NPM packages"
+                className="grid w-full max-w-xl gap-7"
+                onSubmit={(...args) => void handleSubmit(onSubmit)(...args)}
+              >
+                <fieldset className="grid gap-5">
+                  <label
+                    htmlFor="requirement"
+                    className="flex items-center gap-2.5 text-sm font-medium sm:text-base"
+                  >
+                    <span className="grid h-7 w-7 place-items-center rounded-full bg-gray-500 text-xs font-bold text-white sm:text-sm">
+                      1
+                    </span>
+                    <span className="flex-1 text-gray-50">
+                      Enter your requirement
+                    </span>
+                  </label>
+                  <textarea
+                    id="requirement"
+                    rows={2}
+                    className="w-full rounded-md border-gray-400 bg-transparent px-4 pt-2.5 text-base text-gray-50 transition-colors placeholder:text-gray-400 focus:border-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-offset-2 focus:ring-offset-gray-800"
+                    placeholder="e.g. Time"
+                    {...register("requirement")}
+                    onKeyDown={(e) => {
+                      if (!formState.isValid || isLoading) return;
+                      if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+                        handleSubmit(onSubmit)();
+                      }
+                    }}
+                  />
+                  {formState.errors.requirement ? (
+                    <p className="-mt-1.5 text-sm font-medium text-red-500">
+                      {formState.errors.requirement.message}
+                    </p>
+                  ) : null}
+                </fieldset>
+                <fieldset className="grid gap-5">
+                  <label
+                    htmlFor="framework"
+                    className="flex items-center gap-2.5 text-sm font-medium  sm:text-base"
+                  >
+                    <span className="grid h-7 w-7 place-items-center rounded-full bg-gray-500 text-xs font-bold text-white sm:text-sm">
+                      2
+                    </span>
+                    <span className="flex-1 text-gray-50">
+                      Select your framework
+                    </span>
+                  </label>
+                  <DropdownSelect
+                    control={control}
+                    name="framework"
+                    options={frameworks}
+                  />
+                  {formState.errors.framework ? (
+                    <p className="-mt-1.5 text-sm font-medium text-red-500">
+                      {formState.errors.framework.message}
+                    </p>
+                  ) : null}
+                </fieldset>
+                <Button
+                  aria-label="Find packages"
+                  className="w-full"
+                  isLoading={isLoading}
+                  loadingVariant="dots"
+                  disabled={isLoading}
+                >
+                  Find packages
+                </Button>
+              </form>
+            </div>
+          )}
         </div>
       </main>
     </>
